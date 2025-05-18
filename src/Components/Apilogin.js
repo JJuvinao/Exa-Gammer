@@ -6,7 +6,7 @@ import { StoreContext } from "../Store/StoreProvider";
 
 export default function ApiLogin() {
   const navigate = useNavigate();
-  const [dispatch] = useContext(StoreContext);
+  const { dispatch } = useContext(StoreContext);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event) => {
@@ -15,15 +15,13 @@ export default function ApiLogin() {
     const form = event.target;
 
     const Usuario = {
-      Nombre: form.username.value,
-      Contrasena: form.password.value,
-      Rol: "Usuario",
-      Correo: "temporal@ejemplo.com",
+      username: form.username.value,
+      password: form.password.value,
     };
 
     try {
       const response = await fetch(
-        "https://localhost:7248/api/Usuarios/login",
+        "https://localhost:7248/api/Login",
         {
           method: "POST",
           headers: {
@@ -35,15 +33,21 @@ export default function ApiLogin() {
 
       if (response.ok) {
         const usuarioEncontrado = await response.json();
-        Cargarusuario(usuarioEncontrado.nombre, usuarioEncontrado.id);
+        Cargarusuario(usuarioEncontrado.nombre, usuarioEncontrado.id,usuarioEncontrado.token);
         navigate("/menu");
+
+      } else if (response.status === 400) {
+        const errorMessage = await response.text();
+        alert(errorMessage);
+
       } else if (response.status === 401) {
         const errorMessage = await response.text();
         alert(errorMessage);
+
       } else if (response.status === 500) {
         const errorMessage = await response.text();
-        console.log("Error 500:", errorMessage);
         alert("Error en la solicitud: " + errorMessage);
+
       } else {
         alert("Error en el servidor. Intenta de nuevo.");
         console.log("Error en el servidor:", response.status, Usuario.Nombre);
@@ -60,9 +64,10 @@ export default function ApiLogin() {
     navigate("/");
   };
 
-  const Cargarusuario = (username, id) => {
+  const Cargarusuario = (username, id,token) => {
     const user = { name: username, id: id };
     dispatch({ type: types.SET_USER, payload: user });
+    dispatch({ type: types.SET_TOKEN, payload: token });
   };
 
   return (

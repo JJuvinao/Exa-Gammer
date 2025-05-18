@@ -8,9 +8,10 @@ export default function Apiclase() {
   const [estado, setestado] = useState(true);
   const [claseupdate,setclaseupdate] = useState([]);
   const navigate = useNavigate();
-  const [store] = useContext(StoreContext);
+  const {store} = useContext(StoreContext);
   const { user } = store;
 
+  
   useEffect(() => {
     fetch("https://localhost:7248/api/Clases")
       .then((res) => res.json())

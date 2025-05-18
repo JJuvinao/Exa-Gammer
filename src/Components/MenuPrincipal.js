@@ -9,8 +9,8 @@ export default function MenuPrincipal() {
   const [UserClases, setUserClases] = useState([]);
   const navigate = useNavigate();
 
-  const [store, dispatch] = useContext(StoreContext);
-  const { user } = store;
+  const {store, dispatch} = useContext(StoreContext);
+  const { user, token } = store;
 
   useEffect(() => {
     fetch("https://localhost:7248/api/Clases")
@@ -42,6 +42,7 @@ export default function MenuPrincipal() {
             />
             <p className="profile-name">{user?.name}</p>
             <p className="profile-name">{user?.id}</p>
+            <p className="profile-name">{token}</p>
           </div>
           <ul>
             <li>

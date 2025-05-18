@@ -1,11 +1,13 @@
 const types = {
   SET_USER: "SET_USER",
   SET_CLASE: "SET_CLASE",
+  SET_TOKEN: "SET_TOKEN",
 };
 
 const initialState = {
   user: { name: "f", id: null },
   clase: { name: "ff", id: null },
+  token: { token: "ff"}
 };
 
 const storeReducer = (state, action) => {
@@ -20,6 +22,11 @@ const storeReducer = (state, action) => {
         ...state,
         clase: action.payload,
       };
+      case types.SET_TOKEN:
+        return {
+          ...state,
+          token: action.payload,
+        };
     default:
       return state;
   }
