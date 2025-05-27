@@ -32,8 +32,9 @@ export default function ApiLogin() {
       );
 
       if (response.ok) {
-        const usuarioEncontrado = await response.json();
-        Cargarusuario(usuarioEncontrado.nombre, usuarioEncontrado.id,usuarioEncontrado.token);
+        const usuari = await response.json();
+        const user = { name: usuari.user.nombre, id: usuari.user.id, rol: usuari.user.rol, correo: usuari.user.correo };
+        Cargarusuario(user, usuari.token);
         navigate("/menu");
 
       } else if (response.status === 400) {
@@ -50,7 +51,7 @@ export default function ApiLogin() {
 
       } else {
         alert("Error en el servidor. Intenta de nuevo.");
-        console.log("Error en el servidor:", response.status, Usuario.Nombre);
+        console.log("Error en el servidor:", response.status);
       }
     } catch (error) {
       console.error("Error al enviar los datos:", error);
@@ -64,10 +65,10 @@ export default function ApiLogin() {
     navigate("/");
   };
 
-  const Cargarusuario = (username, id,token) => {
-    const user = { name: username, id: id };
+  const Cargarusuario = (user,token) => {
+    const tokenData = { t: token };
     dispatch({ type: types.SET_USER, payload: user });
-    dispatch({ type: types.SET_TOKEN, payload: token });
+    dispatch({ type: types.SET_TOKEN, payload: tokenData });
   };
 
   return (

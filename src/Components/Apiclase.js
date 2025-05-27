@@ -95,7 +95,7 @@ export default function Apiclase() {
                 })
                     .then((response) => {
                         if (response.ok) {
-                            console.log("Clase registrada correctamente en profe-clase");
+                            alert("Clase registrada correctamente en profe-clase");
                         } else {
                             console.error("Error al registrar la clase en profe-clase");
                         }

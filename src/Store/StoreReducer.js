@@ -5,9 +5,9 @@ const types = {
 };
 
 const initialState = {
-  user: { name: "f", id: null },
-  clase: { name: "ff", id: null },
-  token: { token: "ff"}
+  user: { name: null, id: null, rol: null, correo: null },
+  clase: { name: null, id: null },
+  token: { t: null}
 };
 
 const storeReducer = (state, action) => {
