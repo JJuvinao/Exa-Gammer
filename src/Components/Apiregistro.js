@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Apiregistro() {
   const [usuarios, setUsuarios] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const BuscarUser = async (username) => {
@@ -24,6 +25,7 @@ export default function Apiregistro() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
     const form = event.target;
     const username = form.username.value;
     const password = form.password.value;
@@ -64,7 +66,9 @@ export default function Apiregistro() {
       } catch (error) {
         console.error("Error al enviar los datos:", error);
         alert("Ocurrió un error al registrar el usuario.");
-      }
+      }finally {
+      setIsLoading(false);
+    }
     }
   };
 
@@ -106,8 +110,8 @@ export default function Apiregistro() {
             <label htmlFor="correo">Correo electronico:</label>
             <input type="text" id="correo" name="correo" required />
           </div>
-          <button type="submit" className="form-button">
-            Registro
+          <button type="submit" className="form-button" disabled={isLoading}>
+            {isLoading ? "Creando usuario..." : "Registro"}
           </button>
         </form>
       </div>

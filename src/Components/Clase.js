@@ -4,34 +4,34 @@ import { StoreContext } from "../Store/StoreProvider";
 import { useNavigate } from "react-router-dom";
 
 export default function Clases() {
-  const [clases, setClases] = useState([]);
-  const [store] = useContext(StoreContext);
-  const { clase } = store;
-  const { isEditing, setIsEditing } = useState(false);
-  const  navigate = useNavigate();
 
-  useEffect(() => {
-    if (clase.id) {
-        fetch(`https://localhost:7248/api/Clases/${clase.id}`)
-        .then((res) => res.json())
-        .then((data) => setClases(data))
-        .catch((error) =>
-          console.error("Error consultado al recibir clases", error)
-        );
-    }else{
-        alert("No tienes clases disponibles");
+  const [examenes,setexamenes] = useState([]);
+  const {store} = useContext(StoreContext);
+  const { user, token, clase } = store;
+
+
+  const CragarExamenes = async () => {
+    try{
+      const reponse = fetch("https://localhost:7248/api/Examenes", {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`, // <- Aquí va el token
+      "Content-Type": "application/json"
     }
-  }, [clase.id]);
+  });
+    if(reponse.ok){
+      const data = await reponse.json();
+      setexamenes(data);
+    }else{
+      console.error((await reponse).text);
+    }
+    }catch(error){
+      console.error("Error al cargar los examenes", error);
+    }
+    
+  };
 
-  const handleInicio = () => {
-    navigate("/menu");
-    /*hola*/
-  }
-
-  const EditarClase = () => {
-
-  }
-
+/*
   const EliminarClase = async () => {
     const confirmacion = window.confirm("¿Estás seguro de que deseas eliminar esta clase?");
     if (confirmacion) {
@@ -53,52 +53,74 @@ export default function Clases() {
       }
     }
   }
-
+*/
   return (
-    <div className="clasesapi-container">
-      <h1 className="clasesapi-title">Detalles de la Clase</h1>
-      <button className="inicio-button" onClick={handleInicio}> Volver Menu </button>
-      <div className="clasesapi-list">
-        <div key={clases.id} className="clasesapi-card">
-          <h2 className="clasesapi-nombre">{clases.nombre}</h2>
-          <p className="clasesapi-info">
-            <strong>Tema:</strong> {clases.tema}
-          </p>
-          <p className="clasesapi-info">
-            <strong>Autor:</strong> {clases.autor}
-          </p>
-          <p className="clasesapi-info">
-            <strong>Código:</strong> {clases.codigo}
-          </p>
-          <p className="clasesapi-info">
-            <strong>Estado:</strong> {clases.estado ? "Activo" : "Inactivo"}
-          </p>
-          <p className="clasesapi-info">
-            <strong>Fecha:</strong> {new Date(clases.fechaCreacion).toLocaleDateString()}
-          </p>
-          <button className="clasesapi-button" name="BtnEditar" onClick={EditarClase}>Editar Clase</button>
-          <button className="clasesapi-button" name="BtnEliminar" onClick={EliminarClase}>Eliminar Clase</button>
-        </div>
+    <>
+    <main className="menu-principal-container" onLoad={CragarExamenes}>
+      <div className="menu-principal-layout">
+        <nav className="menu-principal-nav">
+
+          <div className="profile-container">
+             <p className="profile-name">{user?.name}</p>
+            <p className="profile-name">{user?.id}</p>
+          </div>
+
+          <ul>
+            <li>
+              <a href="/menu">Volver</a>
+            </li>
+          </ul>
+        </nav>
+
+        <section className="menu-principal-content">
+
+          <header className="menu-principal-header">
+            <h1 className="menu-principal-title">Exa - Gammer</h1>
+          </header>
+
+          <div className="small-section">
+            <p> sección pequeña.</p>
+          </div>
+
+
+          <div className="large-section">
+            <p>Examenes disponibles</p>
+
+            <div className="clase-container">
+              {examenes.map((exam) => (
+                <article
+                  key={exam.Id_Examen}
+                  className="article-clase"
+
+                >
+                  <div className="article-image-container">
+                    <img
+                      src="https://via.placeholder.com/150"
+                      alt="Imagen de la clase"
+                      className="article-image"
+                    />
+                  </div>
+
+                  <div className="article-text">
+                    <p>{exam.nombre}</p>
+                  </div>
+
+                </article>
+              ))}
+
+            </div>
+
+          
+          </div>
+        </section>
       </div>
-    </div>
+
+
+      <footer className="menu-principal-footer">
+        <p>&copy; 2025 Exa-Gammer. Todos los derechos reservados.</p>
+      </footer>
+
+    </main>
+    </>
   );
-}
-
-export function BuscarClase() {
-  const [store] = useContext(StoreContext);
-  const [Profe_Clase, setProfe_Clase] = useState([]);
-  const { user } = store;
-
-  useEffect(() => {
-    fetch("https://localhost:7248/api/Profe_Clase")
-      .then((res) => res.json())
-      .then((data) => setProfe_Clase(data))
-      .catch((error) =>
-        console.error("Error consultado al recibir clases", error)
-      );
-  }, []);
-
-  const clase = Profe_Clase.find((clase) => clase.id_profesor === user.id);
-
-  return clase ? clase.id_clase : null;
 }
