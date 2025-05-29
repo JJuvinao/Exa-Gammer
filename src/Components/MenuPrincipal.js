@@ -1,183 +1,188 @@
-import "./stylesApi.css";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../Store/StoreProvider";
 import { types } from "../Store/StoreReducer";
 
 export default function MenuPrincipal() {
-  const [clases, setClases] = useState([]);
   const [UserClases, setUserClases] = useState([]);
-  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [codigoClase, setCodigoClase] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const {store, dispatch} = useContext(StoreContext);
+  const navigate = useNavigate();
+  const { store, dispatch } = useContext(StoreContext);
   const { user, token } = store;
 
-  const CragarClase = async () => {
+  const cargarClasesUsuario = async () => {
+    try {
+      const response = await fetch(`https://localhost:7248/api/Clases/Profe_Clases/${user.id}`, {
+        headers: {
+          Authorization: `Bearer ${token.t}`,
+          "Content-Type": "application/json"
+        }
+      });
 
-    fetch("https://localhost:7248/api/Clases", {
-    method: "GET",
-    headers: {
-      "Authorization": `Bearer ${token.t}`, // <- Aquí va el token
-      "Content-Type": "application/json"
+      if (!response.ok) throw new Error("Error cargando clases");
+
+      const data = await response.json();
+      setUserClases(data);
+    } catch (err) {
+      console.error("Error:", err);
     }
-  }).then((res) => {
-      if (!res.ok) throw new Error("Error en la respuesta del servidor");
-      return res.json();
-    })
-    .then((data) => {
-    setClases(data);   
-  })
-    .catch(err => console.error("No funciona:", err));   
   };
 
   useEffect(() => {
-    CragarClase();
-  }, []);
+    if (user) cargarClasesUsuario();
+  }, [user]);
 
-  useEffect(() => {
-    
-  if (user) {
-    CragarClase_Profe();
-  } else {
-    setUserClases([]); 
-  }
-}, [clases, user]);
-
-  const CragarClase_Profe = async () => {
-
-    fetch(`https://localhost:7248/api/Clases/Profe_Clases/${user.id}`, {
-    method: "GET",
-    headers: {
-      "Authorization": `Bearer ${token.t}`, // <- Aquí va el token
-      "Content-Type": "application/json"
-    }
-  }).then((res) => {
-      if (!res.ok) throw new Error("Error en la respuesta del servidor");
-      return res.json();
-    })
-    .then((data) => {
-    setUserClases(data);   
-  })
-    .catch(err => console.error("No funciona:", err));   
-  };
-
-  const IrClase = ({ id_c, nom_c }) => {
-    const clase = { name: nom_c, id: id_c };
-    dispatch({ type: types.SET_CLASE, payload: clase });
+  const irAClase = (id, nombre) => {
+    dispatch({ type: types.SET_CLASE, payload: { id, name: nombre } });
     navigate("/clase");
   };
 
-  const handelCerre = () => {
+  const cerrarSesion = () => {
     dispatch({ type: types.SET_USER, payload: null });
     dispatch({ type: types.SET_TOKEN, payload: null });
     localStorage.removeItem("store");
     navigate("/");
-  }
+  };
+
+  const unirseAClase = async () => {
+    if (!codigoClase.trim()) {
+      setError("Por favor ingresa un código de clase");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(`https://localhost:7248/api/Clases/unirse/${codigoClase}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token.t}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          usuarioId: user.id,
+          codigoClase
+        })
+      });
+
+      if (!response.ok) throw new Error("Código inválido o clase no encontrada");
+
+      await response.json();
+      await cargarClasesUsuario();
+
+      setShowModal(false);
+      setCodigoClase("");
+      alert("Te has unido a la clase correctamente");
+    } catch (err) {
+      setError(err.message || "Error al unirse a la clase");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <main className="menu-principal-container">
-      <div className="menu-principal-layout">
-        <nav className="menu-principal-nav">
-          <div className="profile-container">
-            <img
-              src="https://via.placeholder.com/100"
-              alt="Foto de perfil"
-              className="profile-picture"
-            />
-            <p className="profile-name">{user?.name}</p>
-            <p className="profile-name">{token?.t}</p>
-          </div>
-          <ul>
-            <li><a href="/">Inicio</a></li>
-            <li><a href="/clases">Clases</a></li>
-            <li><a href="/clases">Notificaciones</a></li>
-            <li ></li>
-          </ul>
-          <button onClick={handelCerre}
-          className="form-button
-          ">
-            Cerrar session
-          </button>
-        </nav>
-        <section className="menu-principal-content">
-          <header className="menu-principal-header">
-            <h1 className="menu-principal-title">Exa - Gammer</h1>
-          </header>
-          <div className="large-section">
-            <p>Clases disponibles</p>
+    <div className="container-fluid p-0">
+      {/* Navbar */}
+      <nav className="navbar d-flex justify-content-between align-items-center px-4" style={{ backgroundColor: "#586068" }}>
+        <div className="logo d-flex align-items-center text-white fw-bold" style={{ fontSize: "1.5rem" }}>
+          <img src="/logo_del_sitio.png" alt="Logo" style={{ height: "100px", marginRight: "8px" }} />
+          Exa-Gammer
+        </div>
+        <button onClick={cerrarSesion} className="btn btn-primary">Cerrar sesión</button>
+      </nav>
 
-            <div className="clase-container">
-              {/* Article de mostrar las clases  */}
-              {user && user.rol === "Profesor" && <CrearClase />}
-              {user && user.rol === "Estudiante" && <UnirseClase />}
-              {UserClases.map((clase) => (
-                <article
-                  key={clase.id}
-                  className="article-clase"
-                  onClick={() => IrClase({ id_c: clase.id , nom_c: clase.nombre })}
-                >
-                  <div className="article-image-container">
-                    <img
-                      src="https://via.placeholder.com/150"
-                      alt="Imagen de la clase"
-                      className="article-image"
-                    />
+      <div className="row">
+        {/* Sidebar */}
+        <nav className="col-md-3 bg-light p-3 min-vh-100">
+          <div className="text-center mb-4">
+            <img src="https://via.placeholder.com/100" alt="Perfil" className="rounded-circle mb-2" />
+            <h5>{user?.name}</h5>
+          </div>
+          <ul className="nav flex-column">
+            <li className="nav-item"><a href="/" className="nav-link">Inicio</a></li>
+          </ul>
+        </nav>
+
+        {/* Contenido Principal */}
+        <main className="col-md-9 p-4">
+          <h2 className="mb-4">Bienvenido, {user?.name}</h2>
+          <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {user?.rol === "Profesor" && (
+              <div className="col">
+                <div className="card h-100 border-primary text-primary" onClick={() => navigate("/crear-clase")} style={{ cursor: "pointer" }}>
+                  <img src="https://via.placeholder.com/150" className="card-img-top" alt="Crear clase" />
+                  <div className="card-body">
+                    <h5 className="card-title">Crear Clase</h5>
                   </div>
-                  <div className="article-text">
-                    <p>{clase.nombre}</p>
+                </div>
+              </div>
+            )}
+
+            {user?.rol === "Estudiante" && (
+              <div className="col">
+                <div className="card h-100 border-success text-success" onClick={() => setShowModal(true)} style={{ cursor: "pointer" }}>
+                  <img src="https://via.placeholder.com/150" className="card-img-top" alt="Unirse a clase" />
+                  <div className="card-body">
+                    <h5 className="card-title">Unirse a Clase</h5>
                   </div>
-                </article>
-              ))}
+                </div>
+              </div>
+            )}
+
+            {UserClases.map((clase) => (
+              <div className="col" key={clase.id}>
+                <div className="card h-100 shadow" onClick={() => irAClase(clase.id, clase.nombre)} style={{ cursor: "pointer" }}>
+                  <img src="https://via.placeholder.com/150" className="card-img-top" alt="Clase" />
+                  <div className="card-body">
+                    <h5 className="card-title">{clase.nombre}</h5>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </main>
+      </div>
+
+      {/* Modal Unirse */}
+      {showModal && (
+        <div className="modal fade show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }} onClick={() => setShowModal(false)}>
+          <div className="modal-dialog modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Unirse a una Clase</h5>
+                <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+              </div>
+              <div className="modal-body">
+                <label htmlFor="codigoClase" className="form-label">Código de la Clase</label>
+                <input
+                  type="text"
+                  className={`form-control ${error ? 'is-invalid' : ''}`}
+                  id="codigoClase"
+                  value={codigoClase}
+                  onChange={(e) => setCodigoClase(e.target.value.toUpperCase())}
+                  disabled={loading}
+                />
+                {error && <div className="invalid-feedback">{error}</div>}
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={() => setShowModal(false)} disabled={loading}>Cancelar</button>
+                <button className="btn btn-success" onClick={unirseAClase} disabled={loading || !codigoClase.trim()}>
+                  {loading ? "Uniéndose..." : "Unirse"}
+                </button>
+              </div>
             </div>
           </div>
-        </section>
-      </div>
-      <footer className="menu-principal-footer">
+        </div>
+      )}
+
+      <footer className="text-center p-3 bg-light mt-4">
         <p>&copy; 2025 Exa-Gammer. Todos los derechos reservados.</p>
       </footer>
-    </main>
+    </div>
   );
-}
-
-export function CrearClase() {
-  const navigate = useNavigate();
-  const handleArticleClick = () => {
-    navigate("/crearclase");
-  };
-  return (
-    <article className="article-clase" onClick={handleArticleClick}>
-      <div className="article-image-container">
-        <img
-          src="https://via.placeholder.com/150"
-          alt="Imagen del clase"
-          className="article-image"
-        />
-      </div>
-      <div className="article-text">
-        <p>Crear Clase...</p>
-      </div>
-    </article>
-  );
-}
-
-export function UnirseClase(){
-  const navigate = useNavigate();
-  const handleArticleClick = () => {
-    navigate("/clase");
-  };
-  return (
-    <article className="article-clase" onClick={handleArticleClick}>
-      <div className="article-image-container">
-        <img
-          src="https://via.placeholder.com/150"
-          alt="Imagen del clase"
-          className="article-image"
-        />
-      </div>
-      <div className="article-text">
-        <p>Unirse a Clase...</p>
-      </div>
-    </article>
-  );
-
 }
