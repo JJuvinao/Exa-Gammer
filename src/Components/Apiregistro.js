@@ -1,6 +1,6 @@
-import "./stylesApi.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "./Navbar";
 
 export default function Apiregistro() {
   const [usuarios, setUsuarios] = useState([]);
@@ -66,55 +66,69 @@ export default function Apiregistro() {
       } catch (error) {
         console.error("Error al enviar los datos:", error);
         alert("Ocurrió un error al registrar el usuario.");
-      }finally {
-      setIsLoading(false);
+      } finally {
+        setIsLoading(false);
+      }
     }
-    }
-  };
-
-  const handleInicio = () => {
-    navigate("/");
   };
 
   return (
-    <div>
-      <h1>Exa_Gammer</h1>
-      <button className="inicio-button" onClick={handleInicio}>
-        {" "}
-        Volver{" "}
-      </button>
-      <div className="form-container">
-        <form id="loginForm" className="form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="username">Nombre:</label>
-            <input type="text" id="username" name="username" required />
+    <>
+      <div className="Apiregistro-page">
+        <Navbar />
+        <div className="container mt-5">
+          <div className="row justify-content-center">
+            <div className="col-md-6">
+              <form onSubmit={handleSubmit} className="border p-4 shadow rounded bg-light">
+                <div className="mb-3">
+                  <label htmlFor="username" className="form-label">
+                    Nombre de usuario
+                  </label>
+                  <input type="text" className="form-control" id="username" name="username" required />
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="password" className="form-label">
+                    Contraseña
+                  </label>
+                  <input type="password" className="form-control" id="password" name="password" required />
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="category" className="form-label">
+                    Rol
+                  </label>
+                  <select className="form-select" id="category" name="category" required>
+                    <option value="">Seleccionar su rol</option>
+                    <option value="Profesor">Profesor</option>
+                    <option value="Estudiante">Estudiante</option>
+                  </select>
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="correo" className="form-label">
+                    Correo electrónico
+                  </label>
+                  <input type="email" className="form-control" id="correo" name="correo" required />
+                </div>
+
+                <button type="submit" className="btn btn-primary w-100" disabled={isLoading}>
+                  {isLoading ? "Creando usuario..." : "Registrar"}
+                </button>
+
+                <div className="text-center mt-3">
+                  <span>¿Ya tienes cuenta? </span>
+                  <button
+                    type="button"
+                    className="btn btn-link p-0"
+                    onClick={() => navigate("/login")}> Inicia sesión aquí
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="password">contraseña:</label>
-            <input type="password" id="password" name="password" required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="category">Rol:</label>
-            <select
-              id="category"
-              name="category"
-              required
-              className="form-select"
-            >
-              <option value="rol">Selecionar su rol</option>
-              <option value="Profesor">Profesor</option>
-              <option value="Estudiante">Estudiante</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label htmlFor="correo">Correo electronico:</label>
-            <input type="text" id="correo" name="correo" required />
-          </div>
-          <button type="submit" className="form-button" disabled={isLoading}>
-            {isLoading ? "Creando usuario..." : "Registro"}
-          </button>
-        </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -1,5 +1,6 @@
 import { useNavigate} from "react-router-dom";
 import "./stylesApi.css";
+import Navbar from "./Navbar";
 
 export default function Inicio() {
   const navigate = useNavigate();
@@ -13,58 +14,31 @@ export default function Inicio() {
   };
 
   return (
-    <>
-      <div className="page-container">
-        <nav className="navbar">
-          <div className="logo">
-            <img
-              src= '/logo_del_sitio.png'
-              alt="Logo"
-              style={{
-                height: "152px",
-                marginRight: "8px",
-                verticalAlign: "middle",
-              }}
-            />
-            Exa-Gammer
-          </div>
-          <ul className="nav-links">
-            <li>
-              <button onClick={handleLogin} className="nav-button">
-                Iniciar sesión
-              </button>
-            </li>
-            <li>
-              <button onClick={handleRegistro} className="nav-button">
-                Registar cuenta
-              </button>
-            </li>
-          </ul>
-        </nav>
+    <div className="page-container">
+      <Navbar />
 
-        <section className="home-container">
-          <div className="text-content">
-            <h1>
-              Conocimiento
-              <br />
-              sin límites.
-              <br />
-              educación
-              <br />
-              para todos.
-            </h1>
-            <p>
-              Creemos que la educación debe ser un derecho accesible para todos.
-              Nuestro enfoque está centrado en proporcionar un aprendizaje de
-              calidad que fomente el desarrollo académico y personal de cada
-              estudiante...
-            </p>
-          </div>
-        </section>
-        <footer className="home-container-footer">
-          <p>&copy; 2025 Exa-Gammer. Todos los derechos reservados.</p>
-        </footer>
-      </div>
-    </>
+      <section className="home-container">
+        <div className="text-content">
+          <h1>
+            Conocimiento
+            <br />
+            sin límites.
+            <br />
+            educación
+            <br />
+            para todos.
+          </h1>
+          <p>
+            Creemos que la educación debe ser un derecho accesible para todos.
+            Nuestro enfoque está centrado en proporcionar un aprendizaje de
+            calidad que fomente el desarrollo académico y personal de cada
+            estudiante...
+          </p>
+        </div>
+      </section>
+      <footer className="home-container-footer">
+        <p>&copy; 2025 Exa-Gammer. Todos los derechos reservados.</p>
+      </footer>
+    </div>
   );
 }
