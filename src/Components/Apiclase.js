@@ -110,7 +110,7 @@ export default function Apiclase() {
         .catch((error) => {
             console.error("Error al actualizar las clases:", error);
         });
-};
+      };
 
   const handleInicio = () => {
     navigate("/menu");
