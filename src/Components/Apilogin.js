@@ -20,6 +20,7 @@ export default function ApiLogin() {
     };
 
     try {
+      console.log("Enviando datos a la API:", Usuario);
       const response = await fetch("https://localhost:7248/api/Login", {
         method: "POST",
         headers: {
