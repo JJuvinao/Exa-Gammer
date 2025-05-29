@@ -1,18 +1,7 @@
-import { useNavigate} from "react-router-dom";
 import "./stylesApi.css";
 import Navbar from "./Navbar";
 
 export default function Inicio() {
-  const navigate = useNavigate();
-
-  const handleLogin = () => {
-    navigate("/login");
-  };
-
-  const handleRegistro = () => {
-    navigate("/registro");
-  };
-
   return (
     <div className="page-container">
       <Navbar />

@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 export default function Apiregistro() {
   const [usuarios, setUsuarios] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [imag, setImagen] = useState(null);
   const navigate = useNavigate();
 
   const BuscarUser = async (username) => {
@@ -22,6 +23,17 @@ export default function Apiregistro() {
       console.error("Error al buscar el usuario:", error);
     }
   };
+
+  const handleInicio = () => {
+    navigate("/");
+  };
+
+  const handelImagen = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImagen(file);
+    };
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -41,27 +53,27 @@ export default function Apiregistro() {
     if (usuarioEncontrado) {
       alert("Nombre de usuario ya existente: " + usuarioEncontrado.username);
     } else {
-      const nuevoUsuario = {
-        nombre: username,
-        contrasena: password,
-        rol: rol,
-        correo: correo,
-      };
+      const formData = new FormData();
+      formData.append("nombre", username);
+      formData.append("contrasena", password);
+      formData.append("rol", rol);
+      formData.append("correo", correo);
+      if (imag) {
+        formData.append("imagen", imag);
+      }
 
       try {
         const response = await fetch("https://localhost:7248/api/Usuarios", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(nuevoUsuario),
+          body: formData, // No pongas headers aquí
         });
-
+        const responseText = await response.text();
         if (response.ok) {
-          alert("Usuario registrado correctamente");
+          alert(responseText);
           navigate("/login");
         } else {
-          alert("Error al registrar el usuario");
+          alert(responseText);
+          console.error("Error al registrar el usuario:", response.status);
         }
       } catch (error) {
         console.error("Error al enviar los datos:", error);
@@ -112,6 +124,20 @@ export default function Apiregistro() {
                   <input type="email" className="form-control" id="correo" name="correo" required />
                 </div>
 
+                <div className="mb-4">
+                  <label htmlFor="imagen" className="form-label">
+                    Imagen de perfil
+                  </label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    id="imagen"
+                    name="imagen"
+                    accept="image/*"
+                    onChange={handelImagen}
+                  />
+                </div>
+
                 <button type="submit" className="btn btn-primary w-100" disabled={isLoading}>
                   {isLoading ? "Creando usuario..." : "Registrar"}
                 </button>
@@ -124,6 +150,11 @@ export default function Apiregistro() {
                     onClick={() => navigate("/login")}> Inicia sesión aquí
                   </button>
                 </div>
+                <button
+                  type="button"
+                  className="btn btn-link mt-3 w-100"
+                  onClick={handleInicio} > Volver al inicio
+                </button>
               </form>
             </div>
           </div>

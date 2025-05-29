@@ -102,7 +102,14 @@ export default function ApiLogin() {
                 {isLoading ? "Cargando..." : "Iniciar Sesión"}
               </button>
             </form>
-
+            <div className="text-center mt-3">
+              <span>¿No tienes cuenta? </span>
+              <button
+                type="button"
+                className="btn btn-link p-0"
+                onClick={() => navigate("/registro")}> Registrate
+              </button>
+            </div>
             <button
               type="button"
               className="btn btn-link mt-3 w-100"
