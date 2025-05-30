@@ -33,6 +33,11 @@ export default function MenuPrincipal() {
   };
 
   useEffect(() => {
+
+    if(user.rol=="Admin"){
+      navigate("/admin");
+      return;
+    }
     if (user) cargarClasesUsuario();
   }, [user]);
 
@@ -128,7 +133,7 @@ export default function MenuPrincipal() {
             {user?.rol === "Profesor" && (
               <div className="col">
                 <div className="card h-100 border-primary text-primary" onClick={() => navigate("/crearclase")} style={{ cursor: "pointer" }}>
-                  <img src="https://via.placeholder.com/150" className="card-img-top" alt="crearclase" />
+                  <img src="/avatars/avatar1.jpg" className="card-img-top" alt="crearclase" />
                   <div className="card-body">
                     <h5 className="card-title">Crear Clase</h5>
                   </div>
@@ -139,7 +144,7 @@ export default function MenuPrincipal() {
             {user?.rol === "Estudiante" && (
               <div className="col">
                 <div className="card h-100 border-success text-success" onClick={() => setShowModal(true)} style={{ cursor: "pointer" }}>
-                  <img src="https://via.placeholder.com/150" className="card-img-top" alt="Unirse a clase" />
+                  <img src="/avatars/avatar1.jpg" className="card-img-top" alt="Unirse a clase" />
                   <div className="card-body">
                     <h5 className="card-title">Unirse a Clase</h5>
                   </div>
