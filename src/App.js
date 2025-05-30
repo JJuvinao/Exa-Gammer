@@ -6,6 +6,7 @@ import Apiregistro from './Components/Apiregistro';
 import Apiclase from './Components/Apiclase';
 import MenuPrincipal from './Components/MenuPrincipal';
 import Clases from './Components/Clase';
+import CrearJuego from './Components/Juego';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/crearclase" element={<Apiclase />}/>
         <Route path="/menu" element={<MenuPrincipal/>}/>
         <Route path="/clase" element={<Clases/>}/>
+        <Route path="/juegos" element={<CrearJuego/>}/>
         <Route/>
       </Routes>
     </Router>

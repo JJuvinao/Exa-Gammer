@@ -85,6 +85,12 @@ export default function MenuPrincipal() {
     }
   };
 
+  const mostrarimagen = (imagen) => {
+    console.log("Imagen recibida:", imagen);
+    if (!imagen) return null;
+    return `data:image/jpeg;base64,${imagen}`;
+  }
+
   return (
     <div className="container-fluid p-0">
       {/* Navbar */}
@@ -100,7 +106,14 @@ export default function MenuPrincipal() {
         {/* Sidebar */}
         <nav className="col-md-3 bg-light p-3 min-vh-100">
           <div className="text-center mb-4">
-            <img src="https://via.placeholder.com/100" alt="Perfil" className="rounded-circle mb-2" />
+            <img
+              src={user.img || "https://via.placeholder.com/100"}
+              alt="Perfil"
+              className="rounded-circle mb-3 border border-secondary"
+                  width="200"
+                  height="200"
+                  style={{ borderWidth: "6px", borderStyle: "solid", borderColor: "#6c757d" }} 
+            />
             <h5>{user?.name}</h5>
           </div>
           <ul className="nav flex-column">
@@ -114,8 +127,8 @@ export default function MenuPrincipal() {
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             {user?.rol === "Profesor" && (
               <div className="col">
-                <div className="card h-100 border-primary text-primary" onClick={() => navigate("/crear-clase")} style={{ cursor: "pointer" }}>
-                  <img src="https://via.placeholder.com/150" className="card-img-top" alt="Crear clase" />
+                <div className="card h-100 border-primary text-primary" onClick={() => navigate("/crearclase")} style={{ cursor: "pointer" }}>
+                  <img src="https://via.placeholder.com/150" className="card-img-top" alt="crearclase" />
                   <div className="card-body">
                     <h5 className="card-title">Crear Clase</h5>
                   </div>
@@ -134,10 +147,10 @@ export default function MenuPrincipal() {
               </div>
             )}
 
-            {UserClases.map((clase) => (
-              <div className="col" key={clase.id}>
+            {UserClases.map((clase, idx) => (
+              <div className="col" key={clase.id || idx}>
                 <div className="card h-100 shadow" onClick={() => irAClase(clase.id, clase.nombre)} style={{ cursor: "pointer" }}>
-                  <img src="https://via.placeholder.com/150" className="card-img-top" alt="Clase" />
+                  <img src= {clase.imagenClase || "https://via.placeholder.com/150"}   className="card-img-top" alt="Clase" />
                   <div className="card-body">
                     <h5 className="card-title">{clase.nombre}</h5>
                   </div>

@@ -31,8 +31,13 @@ export default function Apiregistro() {
   const handelImagen = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImagen(file);
-    };
+      if (file.type === "image/png" || file.type === "image/jpeg") {
+        setImagen(file);
+      } else {
+        alert("Solo se permiten imágenes JPG o PNG.");
+        setImagen(null);
+      }
+    }
   }
 
   const handleSubmit = async (event) => {
@@ -133,7 +138,7 @@ export default function Apiregistro() {
                     className="form-control"
                     id="imagen"
                     name="imagen"
-                    accept="image/*"
+                    accept="image/png, image/jpeg"
                     onChange={handelImagen}
                   />
                 </div>
