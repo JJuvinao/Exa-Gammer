@@ -8,6 +8,7 @@ import MenuPrincipal from './Components/MenuPrincipal';
 import Clases from './Components/Clase';
 import CrearJuego from './Components/Juego';
 import ListaUsuarios from './Components/Usuario';
+import Ahorcado from './Juegos/Ahorcado';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/clase" element={<Clases/>}/>
         <Route path="/admin" element={<CrearJuego/>}/>
         <Route path="/usuario" element={<ListaUsuarios/>}/>
+        <Route path="/juego" element={<Ahorcado/>}/>
         {/* Puedes agregar más rutas aquí */}
         <Route/>
       </Routes>
