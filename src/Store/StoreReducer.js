@@ -2,12 +2,14 @@ const types = {
   SET_USER: "SET_USER",
   SET_CLASE: "SET_CLASE",
   SET_TOKEN: "SET_TOKEN",
+  SET_EXAMEN: "SET_EXAMEN",
 };
 
 const initialState = {
   user: { name: null, id: null, rol: null, correo: null, img: null },
   clase: { name: null, id: null },
-  token: { t: null}
+  token: { t: null},
+  examen: { id: null, nombre: null, codigo: null },
 };
 
 const storeReducer = (state, action) => {
@@ -27,6 +29,11 @@ const storeReducer = (state, action) => {
           ...state,
           token: action.payload,
         };
+    case types.SET_EXAMEN:
+      return {
+        ...state,
+        examen: action.payload,
+      };
     default:
       return state;
   }
