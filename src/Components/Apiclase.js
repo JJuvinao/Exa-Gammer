@@ -2,218 +2,280 @@ import "./stylesApi.css";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../Store/StoreProvider";
+import Navbar from "./Navbar";
 
 export default function Apiclase() {
-  const [clases, setClases] = useState([]);
-  const [estado, setestado] = useState(true);
-  const [claseupdate,setclaseupdate] = useState([]);
-  const navigate = useNavigate();
-  const {store} = useContext(StoreContext);
-  const { user } = store;
+  const [isLoading, setIsLoading] = useState(false);
+  const [UserClases, setUserClases] = useState([]);
 
-  
-  useEffect(() => {
-    fetch("https://localhost:7248/api/Clases")
-      .then((res) => res.json())
-      .then((data) => setClases(data))
-      .catch((error) =>
-        console.error("Error consultado al recibir clases", error)
-      );
-  }, []);
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState("/avatars/avatar1.jpg");
+
+  const avatarList = [
+    "/avatars/avatar1.jpg",
+    "/avatars/avatar2.jpg",
+    "/avatars/avatar3.jpg",
+    "/avatars/avatar5.jpg",
+    "/avatars/avatar6.jpg",
+  ];
+
+  const { store } = useContext(StoreContext);
+  const [imag, setImagen] = useState(null);
+  const navigate = useNavigate();
+  const { user, token } = store;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
     const form = event.target;
-    const nombre = form.nombre.value;
-    const tema = form.tema.value;
-    const autor = user.name;
-    const codigo = form.codigo.value;
-    const estado = true;
-    const fecha = new Date().toISOString();
 
-    const claseEncontrada = clases.find((clase) => clase.nombre === nombre);
+    const newclase = {
+      nombre: form.nombre.value,
+      tema: form.tema.value,
+      autor: user.name,
+      ImagenClase: selectedAvatar,
+      Id_Profe: user.id,
+    };
 
-    if (claseEncontrada) {
-      alert("Nombre de clase ya existente: " + claseEncontrada.nombre);
-    } else {
-      const nuevaClase = {
-        nombre: nombre,
-        tema: tema,
-        autor: autor,
-        codigo: codigo,
-        estado: estado,
-        fecha: fecha,
-      };
-
-      /*guardar clase */
-      try {
-        await fetch("https://localhost:7248/api/Clases", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(nuevaClase),
-        });
-        alert("primero clase")
-      } catch (error) {
-        console.error("Error al enviar los datos a clase:", error);
+    // Guardar clase
+    try {
+      const response = await fetch("https://localhost:7248/api/Clases", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token.t}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newclase),
+      });
+      const reponText = await response.text();
+      if (response.ok) {
+        alert(reponText);
+        navigate("/menu");
+      } else {
+        alert(reponText);
       }
-
-      /* guardar en profe-clase*/
-      try{
-        handleProfeClase({ clasenom: nombre })
-      }catch (error){
-        console.error("Error al enviar los datos:", error);
-      }
+    } catch (error) {
+      console.error("Error al enviar los datos a clase:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleProfeClase = ({ clasenom }) => {
-    // Llamada no asincrónica a la API
-    fetch("https://localhost:7248/api/Clases")
-        .then((res) => res.json())
-        .then((data) => {
-            setclaseupdate(data);
-            console.log("Clases actualizadas:", data);
+  const cargarClasesUsuario = async () => {
+    try {
+      const response = await fetch(
+        `https://localhost:7248/api/Clases/Profe_Clases/${user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token.t}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-            const Claseid = data.find((clase) => clase.nombre === clasenom);
+      if (!response.ok) throw new Error("Error cargando clases");
 
-            if (Claseid != null) {
-                const fecha2 = new Date().toISOString();
-                const nuevaProClase = {
-                    id_profesor: user.id,
-                    id_clase: Claseid.id,
-                    fecha_creacion: fecha2,
-                };
+      const data = await response.json();
+      setUserClases(data);
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  };
 
-                fetch("https://localhost:7248/api/Profe_Clase", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(nuevaProClase),
-                })
-                    .then((response) => {
-                        if (response.ok) {
-                            alert("Clase registrada correctamente en profe-clase");
-                        } else {
-                            console.error("Error al registrar la clase en profe-clase");
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Error al enviar los datos a profe-clase:", error);
-                    });
-            } else {
-                console.error("Clase no encontrada:", clasenom);
-            }
-        })
-        .catch((error) => {
-            console.error("Error al actualizar las clases:", error);
-        });
-      };
+  useEffect(() => {
+    if (user) cargarClasesUsuario();
+  }, [user]);
 
-  const handleInicio = () => {
-    navigate("/menu");
+  const handelImagen = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImagen(file);
+    }
   };
 
   return (
-    <div>
-      <h1>API Crear Clases</h1>
-      <button className="inicio-button" onClick={handleInicio}>
-        {" "}
-        Volver{" "}
-      </button>
-      <div className="form-container">
-        <form id="claseForm" className="form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" required />
+    <div className="container-fluid p-0">
+      <Navbar />
+      <div className="container py-5">
+        <div className="row justify-content-center">
+          {/* usuario */}
+          <div className="col-md-4 mb-4">
+            <div
+              className="card shadow-sm text-center bg-white rounded-4 h-100"
+              style={{ minHeight: "500px" }}
+            >
+              <div className="card-body d-flex flex-column justify-content-center align-items-center">
+                <img
+                  src={user.img || "https://via.placeholder.com/100"}
+                  alt="Avatar"
+                  className="rounded-circle mb-3 border border-secondary"
+                  width="200"
+                  height="200"
+                  style={{
+                    borderWidth: "6px",
+                    borderStyle: "solid",
+                    borderColor: "#6c757d",
+                  }}
+                />
+                <h5 className="card-title">{user.name}</h5>
+                <p className="text-muted">{user.rol}</p>
+              </div>
+            </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="tema">Tema:</label>
-            <input type="text" id="tema" name="tema" required />
+
+          <div className="col-md-8 col-lg-6">
+            <div className="card shadow">
+              <div className="card-header bg-primary text-white text-center">
+                <h3>Crear Clase</h3>
+              </div>
+              <div className="card-body">
+                <form id="claseForm" onSubmit={handleSubmit}>
+                  <div className="mb-3">
+                    <label htmlFor="nombre" className="form-label">
+                      Nombre:
+                    </label>
+                    <input
+                      type="text"
+                      id="nombre"
+                      name="nombre"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="tema" className="form-label">
+                      Tema:
+                    </label>
+                    <input
+                      type="text"
+                      id="tema"
+                      name="tema"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="autor" className="form-label">
+                      Autor:
+                    </label>
+                    <input
+                      type="text"
+                      id="autor"
+                      name="autor"
+                      className="form-control"
+                      value={user.name}
+                      readOnly
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-4 text-center">
+                    <label className="form-label">Imagen</label>
+                    <div>
+                      <img
+                        src={selectedAvatar}
+                        alt="Avatar seleccionado"
+                        className="rounded-circle mb-2 border border-secondary"
+                        width="100"
+                        height="100"
+                        style={{
+                          borderWidth: "8px",
+                          borderStyle: "solid",
+                          borderColor: "#6c757d",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary mt-2"
+                      onClick={() => setShowAvatarModal(true)}
+                    >
+                      Seleccionar Avatar
+                    </button>
+                  </div>
+
+                  <div className="d-flex justify-content-center">
+                    <button
+                      type="submit"
+                      className="btn btn-success btn-lg w-100 py-2"
+                      style={{ fontSize: "1.5rem", maxWidth: "500px" }}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Cargando..." : "Crear"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="autor">Autor:</label>
-            <input type="text" id="autor" name="autor" value={user.name} readOnly required />
+
+          {/* Lista de clases */}
+          <div className="card bg-white shadow rounded-4">
+            <div className="card-header bg-dark text-white text-center rounded-top-4">
+              <h5>Clases Creadas</h5>
+            </div>
+            <ul className="list-group list-group-flush">
+              {UserClases.map((clase, index) => (
+                <li
+                  key={index}
+                  className="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  <div>
+                    <strong>{clase.nombre}</strong> - {clase.tema}
+                  </div>
+                </li>
+              ))}
+              {UserClases.length === 0 && (
+                <li className="list-group-item text-center text-muted">
+                  No hay clases creadas.
+                </li>
+              )}
+            </ul>
           </div>
-          <div className="form-group">
-            <label htmlFor="codigo">Código:</label>
-            <input type="text" id="codigo" name="codigo" required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="estado">Estado:</label>
-            <input
-              type="text"
-              id="estado"
-              name="estado"
-              value={estado}
-              readOnly
-            />
-          </div>
-          <button type="submit" className="form-button">
-            Registrar Clase
-          </button>
-        </form>
+        </div>
       </div>
+
+      {showAvatarModal && (
+        <div
+          className="modal fade show d-block"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+          onClick={() => setShowAvatarModal(false)}
+        >
+          <div
+            className="modal-dialog modal-dialog-centered"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Selecciona un avatar</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowAvatarModal(false)}
+                ></button>
+              </div>
+              <div className="modal-body d-flex flex-wrap justify-content-center gap-3">
+                {avatarList.map((avatar, idx) => (
+                  <img
+                    key={idx}
+                    src={avatar}
+                    alt={`Avatar ${idx + 1}`}
+                    className="rounded-circle border border-primary"
+                    width="80"
+                    height="80"
+                    style={{ cursor: "pointer", objectFit: "cover" }}
+                    onClick={() => {
+                      setSelectedAvatar(avatar);
+                      setShowAvatarModal(false);
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
-
-export function UnirClase({ id, nomclase }) {
-  const [clases, setClases] = useState([]);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    fetch("https://localhost:7248/api/Clases")
-      .then((res) => res.json())
-      .then((data) => setClases(data))
-      .catch((error) =>
-        console.error("Error consultado al recibir clases", error)
-      );
-  }, []);
-
-  const unir = () => {
-    const claseEncontrada = clases.find((clase) => clase.nombre === nomclase);
-
-    if (claseEncontrada) {
-      alert("Clase Encontrada: ");
-      Profe_clase_post(claseEncontrada.id);
-    } else {
-      console.log("No se encontro la clase");
-    }
-  };
-
-  const Profe_clase_post = async (event) => {
-    const [id_profe] = useState(1);
-    const [id_cla] = useState(4);
-    const fecha = new Date().toISOString();
-
-    const nuevaClase = {
-      id_profesor: id_profe,
-      id_clase: id_cla,
-      fecha_creacion: fecha,
-    };
-
-    try {
-      const response = await fetch("https://localhost:7248/api/Profe_Clase", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(nuevaClase),
-      });
-
-      if (response.ok) {
-        alert("Clase registrada correctamente");
-        navigate("clase");
-      } else {
-        alert("Error al registrar la clase");
-      }
-    } catch (error) {
-      console.error("Error al enviar los datos:", error);
-    }
-  };
-
-  return Profe_clase_post();
 }

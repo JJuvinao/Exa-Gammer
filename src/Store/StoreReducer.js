@@ -5,7 +5,7 @@ const types = {
 };
 
 const initialState = {
-  user: { name: null, id: null, rol: null, correo: null },
+  user: { name: null, id: null, rol: null, correo: null, img: null },
   clase: { name: null, id: null },
   token: { t: null}
 };
