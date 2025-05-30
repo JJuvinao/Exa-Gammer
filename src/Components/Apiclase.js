@@ -86,13 +86,6 @@ export default function Apiclase() {
     if (user) cargarClasesUsuario();
   }, [user]);
 
-  const handelImagen = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImagen(file);
-    }
-  };
-
   return (
     <div className="container-fluid p-0">
       <Navbar />

@@ -1,0 +1,83 @@
+.ahorcado {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #F5FFFA;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    margin: 50px auto;
+}
+
+.ahorcado h1 {
+    font-size: 2.5rem;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.ahorcado p {
+    font-size: 1.2rem;
+    color: #333;
+    margin: 10px 0;
+}
+
+.letras {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.letras button {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.letras button:hover {
+    background-color: #0056b3;
+}
+
+.letras button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.ahorcado .palabra {
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 5px;
+    margin: 20px 0;
+}
+
+.reiniciar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px; /* Espacio superior opcional */
+}
+
+.reiniciar {
+    width: 150px;
+    height: 50px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.reiniciar:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
