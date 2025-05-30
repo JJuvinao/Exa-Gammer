@@ -114,7 +114,7 @@ export default function MenuPrincipal() {
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             {user?.rol === "Profesor" && (
               <div className="col">
-                <div className="card h-100 border-primary text-primary" onClick={() => navigate("/crear-clase")} style={{ cursor: "pointer" }}>
+                <div className="card h-100 border-primary text-primary" onClick={() => navigate("/crearclase")} style={{ cursor: "pointer" }}>
                   <img src="https://via.placeholder.com/150" className="card-img-top" alt="Crear clase" />
                   <div className="card-body">
                     <h5 className="card-title">Crear Clase</h5>

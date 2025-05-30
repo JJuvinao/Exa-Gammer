@@ -73,7 +73,7 @@ export default function Apiregistro() {
           navigate("/login");
         } else {
           alert(responseText);
-          console.error("Error al registrar el usuario:", response.status);
+          console.error("Error al registrar el usuario:", responseText);
         }
       } catch (error) {
         console.error("Error al enviar los datos:", error);
