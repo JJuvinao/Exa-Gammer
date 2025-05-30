@@ -20,7 +20,6 @@ export default function ApiLogin() {
     };
 
     try {
-      console.log("Enviando datos a la API:", Usuario);
       const response = await fetch("https://localhost:7248/api/Login", {
         method: "POST",
         headers: {
@@ -31,11 +30,13 @@ export default function ApiLogin() {
 
       if (response.ok) {
         const usuari = await response.json();
+        const imagenSrc = usuari.user.imagen ? `data:image/"png";base64,${usuari.user.imagen}` : '';
         const user = {
           name: usuari.user.nombre,
           id: usuari.user.id,
           rol: usuari.user.rol,
           correo: usuari.user.correo,
+          img: imagenSrc
         };
         Cargarusuario(user, usuari.token);
         navigate("/menu");

@@ -6,6 +6,8 @@ import Apiregistro from './Components/Apiregistro';
 import Apiclase from './Components/Apiclase';
 import MenuPrincipal from './Components/MenuPrincipal';
 import Clases from './Components/Clase';
+import CrearJuego from './Components/Juego';
+import ListaUsuarios from './Components/Usuario';
 
 function App() {
   return (
@@ -17,6 +19,9 @@ function App() {
         <Route path="/crearclase" element={<Apiclase />}/>
         <Route path="/menu" element={<MenuPrincipal/>}/>
         <Route path="/clase" element={<Clases/>}/>
+        <Route path="/admin" element={<CrearJuego/>}/>
+        <Route path="/usuario" element={<ListaUsuarios/>}/>
+        {/* Puedes agregar más rutas aquí */}
         <Route/>
       </Routes>
     </Router>
