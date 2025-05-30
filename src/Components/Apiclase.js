@@ -39,6 +39,7 @@ export default function Apiclase() {
 
     // Guardar clase
     try {
+      console.log("Enviando datos a clase:", newclase);
       const response = await fetch("https://localhost:7248/api/Clases", {
         method: "POST",
         headers: {
@@ -52,7 +53,7 @@ export default function Apiclase() {
         alert(reponText);
         navigate("/menu");
       } else {
-        alert(reponText);
+        alert(reponText,response.status);
       }
     } catch (error) {
       console.error("Error al enviar los datos a clase:", error);

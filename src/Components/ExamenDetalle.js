@@ -1,20 +1,28 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { StoreContext } from "../Store/StoreProvider";
+import { types } from "../Store/StoreReducer";
 import Navbar from "./Navbar";
 
 export default function ExamenDetalle() {
     const { state } = useLocation();
-    const examen = state?.examen;
+    const examens = state?.examen;
     const navigate = useNavigate();
-    const { store } = useContext(StoreContext);
+    const { dispatch } = useContext(StoreContext);
 
-    if (!examen) {
+
+    if (!examens) {
         return <p className="text-center mt-5">No hay examen seleccionado.</p>;
     }
 
     const entrarAlExamen = () => {
-        alert("Aquí se cargaría el examen real. Pronto disponible...");
+        const exa = {
+            id: examens.id_Examen,
+            nombre: examens.nombre,
+            codigo: examens.codigo,
+        };
+        dispatch({ type: types.SET_EXAMEN, payload: exa });
+        navigate("/juego");
     };
 
     return (
@@ -22,9 +30,10 @@ export default function ExamenDetalle() {
             <Navbar />
             <div className="card shadow">
                 <div className="card-body">
-                    <h2 className="card-title">{examen.nombre}</h2>
-                    <p><strong>Fecha:</strong> {new Date(examen.fecha).toLocaleDateString()}</p>
-                    <p><strong>Descripción:</strong> {examen.descripcion || "Sin descripción."}</p>
+                    <h2 className="card-title">{examens.nombre}</h2>
+                    <p><strong>Código:</strong> {examens.id_Examen}</p>
+                    <p><strong>Fecha:</strong> {new Date(examens.fecha).toLocaleDateString()}</p>
+                    <p><strong>Descripción:</strong> {examens.descripcion || "Sin descripción."}</p>
 
                     <button className="btn btn-success mt-3" onClick={entrarAlExamen}>
                         Ingresar al Examen
