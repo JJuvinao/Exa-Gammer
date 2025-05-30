@@ -12,7 +12,7 @@ import Ahorcado from './Juegos/Ahorcado';
 
 function App() {
   return (
-     <Router>
+    <Router>
       <Routes>
         <Route path="/" element={<Inicio/>}/>
         <Route path="/login" element={<ApiLogin/>}/>
@@ -23,6 +23,8 @@ function App() {
         <Route path="/admin" element={<CrearJuego/>}/>
         <Route path="/usuario" element={<ListaUsuarios/>}/>
         <Route path="/juego" element={<Ahorcado/>}/>
+        <Route path="/examen" element={<ExamenDetalle/>} />
+
         {/* Puedes agregar más rutas aquí */}
         <Route/>
       </Routes>

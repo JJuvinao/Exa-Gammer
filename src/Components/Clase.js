@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import { StoreContext } from "../Store/StoreProvider";
 import { useNavigate } from "react-router-dom";
 
-export default function Clases() {
+export default function Clase() {
   const [examenes, setExamenes] = useState([]);
   const { store } = useContext(StoreContext);
   const { user, token, clase } = store;
@@ -12,7 +12,7 @@ export default function Clases() {
   useEffect(() => {
     const cargarExamenes = async () => {
       try {
-        const response = await fetch("https://localhost:7248/api/Examenes", {
+        const response = await fetch(`https://localhost:7248/api/Examenes/Clase/${clase.id}`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token?.t || token}`,
@@ -29,33 +29,12 @@ export default function Clases() {
         console.error("Error al cargar los examenes", error);
       }
     };
-    cargarExamenes();
-  }, [token]);
+    if (clase?.id) cargarExamenes();
+  }, [clase, token]);
 
-/*
-const EliminarClase = async () => {
-const confirmacion = window.confirm("¿Estás seguro de que deseas eliminar esta clase?");
-if (confirmacion) {
-try{
-const response = await fetch(`https://localhost:7248/api/Clases/${clases.id}`, {
-method: "DELETE",
-headers: {
-"Content-Type": "application/json",
-}
-})
-if (response.ok) {
-alert("Clase eliminada correctamente");
-navigate("/menu");
-} else {
-alert("Error al eliminar la clase");
-}
-      }catch(error){
-        console.error("Error al eliminar la clase", error);
-      }
-    }
-  }
-*/
-
+  const verExamen = (examen) => {
+    navigate("/examen", { state: { examen } });
+  };
 
   return (
     <div className="container-fluid p-0">
@@ -72,7 +51,7 @@ alert("Error al eliminar la clase");
         {/* Sidebar */}
         <nav className="col-md-3 bg-light p-3 min-vh-100">
           <div className="text-center mb-4">
-            <img src="https://via.placeholder.com/100" alt="Perfil" className="rounded-circle mb-2" />
+            <img src={user?.img || "https://via.placeholder.com/100"} alt="Perfil" className="rounded-circle mb-2" width="100" height="100" />
             <h5>{user?.name}</h5>
             <p className="text-muted">{user?.id}</p>
           </div>
@@ -95,15 +74,16 @@ alert("Error al eliminar la clase");
               </div>
             )}
             {examenes.map((exam) => (
-              <div className="col" key={exam.Id_Examen}>
-                <div className="card h-100 shadow" style={{ cursor: "pointer" }}>
+              <div className="col" key={exam.id}>
+                <div className="card h-100 shadow" onClick={() => verExamen(exam)} style={{ cursor: "pointer" }}>
                   <img
                     src="https://via.placeholder.com/150"
                     className="card-img-top"
-                    alt="Imagen de la clase"
+                    alt="Imagen del examen"
                   />
                   <div className="card-body">
                     <h5 className="card-title">{exam.nombre}</h5>
+                    <p className="card-text">{exam.descripcion?.slice(0, 100)}...</p>
                   </div>
                 </div>
               </div>
