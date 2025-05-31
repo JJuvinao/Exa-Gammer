@@ -28,7 +28,7 @@ export default function CrearExamen() {
     formData.append("Autor", user.name);
     formData.append("Descripcion", descripcion);
     formData.append("ImagenExamen", imagen);
-    formData.append("ClaseId", clase.id); // Asumiendo que tu backend usa este nombre o lo infiere por la relación
+    formData.append("Id_Clase", clase.id_clase); // Asumiendo que tu backend usa este nombre o lo infiere por la relación
 
     try {
       const response = await fetch("https://localhost:7248/api/Examenes", {
@@ -43,7 +43,8 @@ export default function CrearExamen() {
 
       if (response.ok) {
         alert("Examen creado correctamente.");
-        navigate("/clase");
+        console.log(clase.id);
+        //navigate("/clase");
       } else {
         alert("Error al crear el examen: " + responseText);
       }

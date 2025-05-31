@@ -41,6 +41,46 @@ const palabrasConPista = [
     palabra: "frontend",
     pista: "Parte visual de una aplicación web, vista por el usuario.",
   },
+  {
+    palabra: "constitucion",
+    pista: "Conjunto de leyes fundamentales de un país.",
+  },
+  {
+    palabra: "arqueologia",
+    pista: "Ciencia que estudia las civilizaciones antiguas a través de sus restos.",
+  },
+  {
+    palabra: "biodiversidad",
+    pista: "Variedad de especies animales y vegetales en un entorno.",
+  },
+  {
+    palabra: "democracia",
+    pista: "Sistema político donde el pueblo elige a sus gobernantes.",
+  },
+  {
+    palabra: "filosofia",
+    pista: "Disciplina que estudia cuestiones fundamentales sobre la existencia y el conocimiento.",
+  },
+  {
+    palabra: "literatura",
+    pista: "Arte de la expresión escrita o hablada.",
+  },
+  {
+    palabra: "astronomia",
+    pista: "Ciencia que estudia los astros y el universo.",
+  },
+  {
+    palabra: "prehistoria",
+    pista: "Período anterior a la invención de la escritura.",
+  },
+  {
+    palabra: "ecosistema",
+    pista: "Conjunto de seres vivos y su entorno natural.",
+  },
+  {
+    palabra: "mitologia",
+    pista: "Conjunto de mitos y leyendas de una cultura.",
+  },
 ];
 
 function obtenerPalabraYPistaAleatoria() {
@@ -56,16 +96,19 @@ export default function Ahorcado() {
   const [juegoActivo, setJuegoActivo] = useState(true);
   const [reinicios, setReinicios] = useState(0);
   const [resultados, setResultados] = useState(null);
+  const [palabrasUsadas, setPalabrasUsadas] = useState([]);
+  const [mostrarModal, setMostrarModal] = useState(false);
 
   const { store } = useContext(StoreContext);
   const { user, token, examen } = store;
 
   // Al iniciar el juego
   useEffect(() => {
-    const seleccion = obtenerPalabraYPistaAleatoria();
+    const seleccion = obtenerPalabraYPistaSinRepetir();
     setPalabra(seleccion.palabra);
     setPista(seleccion.pista);
-  }, []);
+    // eslint-disable-next-line
+  }, [reinicios]);
 
   const manejarClick = (letra) => {
     if (!juegoActivo || letrasUsadas.includes(letra)) return;
@@ -84,6 +127,7 @@ export default function Ahorcado() {
 
     if (!palabraRenderizada.includes("_")) {
       setJuegoActivo(false);
+      setMostrarModal(true); // <-- agrega esto
       const resultado = {
         usuario: user.name,
         aciertos: palabra.length,
@@ -105,6 +149,7 @@ export default function Ahorcado() {
       guardarResultadosAPI(resultadoExamen);
     } else if (intentos - 1 === 0 && !palabra.includes(letra)) {
       setJuegoActivo(false);
+      setMostrarModal(true); // <-- agrega esto
       const resultado = {
         usuario: user.name,
         aciertos: palabra.split("").filter((l) => nuevasLetrasUsadas.includes(l)).length,
@@ -136,7 +181,7 @@ export default function Ahorcado() {
 
   async function guardarResultadosAPI(resultados) {
     try {
-      const response = await fetch("https://localhost:7248/api/Clases/Profe_Clases/IngresarExa", {
+      const response = await fetch("https://localhost:7248/api/Estudi_Examen/IngresarExa", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -153,6 +198,52 @@ export default function Ahorcado() {
       console.error("Error al guardar resultados:", error);
     }
   }
+
+  // Nueva función para obtener palabra sin repetir
+  function obtenerPalabraYPistaSinRepetir() {
+    const disponibles = palabrasConPista.filter(
+      (item) => !palabrasUsadas.includes(item.palabra)
+    );
+    if (disponibles.length === 0) {
+      // Si ya se usaron todas, reinicia la lista
+      setPalabrasUsadas([]);
+      return palabrasConPista[Math.floor(Math.random() * palabrasConPista.length)];
+    }
+    const seleccion = disponibles[Math.floor(Math.random() * disponibles.length)];
+    setPalabrasUsadas([...palabrasUsadas, seleccion.palabra]);
+    return seleccion;
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      const letra = event.key.toLowerCase();
+      if (/^[a-zñ]$/.test(letra)) {
+        manejarClick(letra);
+      }
+    };
+    if (juegoActivo) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+    // eslint-disable-next-line
+  }, [juegoActivo, letrasUsadas, intentos, palabra]);
+
+  useEffect(() => {
+    const handleEnter = (event) => {
+      if (mostrarModal && event.key === "Enter") {
+        setJuegoActivo(true);
+        setLetrasUsadas([]);
+        setIntentos(6);
+        setReinicios(reinicios + 1);
+        setResultados(null);
+        setMostrarModal(false);
+      }
+    };
+    window.addEventListener("keydown", handleEnter);
+    return () => window.removeEventListener("keydown", handleEnter);
+  }, [mostrarModal, reinicios]);
 
   return (
     <>
@@ -257,9 +348,7 @@ export default function Ahorcado() {
                       setIntentos(6);
                       setReinicios(reinicios + 1);
                       setResultados(null);
-                      const seleccion = obtenerPalabraYPistaAleatoria();
-                      setPalabra(seleccion.palabra);
-                      setPista(seleccion.pista);
+                      setMostrarModal(false); // <-- agrega esto
                     }}
                   >
                     Reiniciar Juego
@@ -285,6 +374,47 @@ export default function Ahorcado() {
           </div>
         </div>
       </div>
+
+      {mostrarModal && (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      background: "rgba(0,0,0,0.7)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 9999,
+    }}
+  >
+    <div
+      style={{
+        background: "#fff",
+        padding: "3rem 2rem",
+        borderRadius: "20px",
+        textAlign: "center",
+        boxShadow: "0 0 30px #0008",
+        minWidth: "350px"
+      }}
+    >
+      <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>
+        {resultados?.estado === "Ganó" ? "¡Felicidades, ganaste!" : "¡Perdiste!"}
+      </h1>
+      <p style={{ fontSize: "2rem" }}>
+        La palabra era: <strong>{palabra}</strong>
+      </p>
+      <button
+        className="btn btn-primary btn-lg mt-4"
+        onClick={() => setMostrarModal(false)}
+      >
+        Cerrar
+      </button>
+    </div>
+  </div>
+)}
     </>
   );
 }

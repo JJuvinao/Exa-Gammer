@@ -9,6 +9,8 @@ import Clases from './Components/Clase';
 import CrearJuego from './Components/Juego';
 import ListaUsuarios from './Components/Usuario';
 import Ahorcado from './Juegos/Ahorcado';
+import ExamenDetalle from './Components/ExamenDetalle';
+import CrearExamen from './Components/CrearExamen';
 
 function App() {
   return (
@@ -24,6 +26,7 @@ function App() {
         <Route path="/usuario" element={<ListaUsuarios/>}/>
         <Route path="/juego" element={<Ahorcado/>}/>
         <Route path="/examen" element={<ExamenDetalle/>} />
+        <Route path="/crear-examen" element={<CrearExamen/>} />
 
         {/* Puedes agregar más rutas aquí */}
         <Route/>

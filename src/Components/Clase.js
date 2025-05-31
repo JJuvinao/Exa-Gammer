@@ -12,10 +12,10 @@ export default function Clase() {
   useEffect(() => {
     const cargarExamenes = async () => {
       try {
-        const response = await fetch(`https://localhost:7248/api/Examenes/Clase/${clase.id}`, {
+        const response = await fetch(`https://localhost:7248/api/Examenes/ExamenesClase/${clase.id_clase}`, {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${token?.t || token}`,
+            "Authorization": `Bearer ${token.t }`,
             "Content-Type": "application/json"
           }
         });
@@ -29,8 +29,8 @@ export default function Clase() {
         console.error("Error al cargar los examenes", error);
       }
     };
-    if (clase?.id) cargarExamenes();
-  }, [clase, token]);
+    if (clase?.id_clase) cargarExamenes();
+  }, [clase]);
 
   const verExamen = (examen) => {
     navigate("/examen", { state: { examen } });
@@ -42,7 +42,7 @@ export default function Clase() {
       <nav className="navbar d-flex justify-content-between align-items-center px-4" style={{ backgroundColor: "#586068" }}>
         <div className="logo d-flex align-items-center text-white fw-bold" style={{ fontSize: "1.5rem" }}>
           <img src="/logo_del_sitio.png" alt="Logo" style={{ height: "60px", marginRight: "8px" }} />
-          Exa-Gammer - Clase: {clase.name}
+          Exa-Gammer - Clase: {clase.name} - {clase.id_clase}
         </div>
         <button onClick={() => navigate("/menu")} className="btn btn-outline-light">Volver al menú</button>
       </nav>
@@ -62,8 +62,23 @@ export default function Clase() {
           </ul>
         </nav>
 
+
+
         {/* Contenido principal */}
         <main className="col-md-9 p-4">
+
+           {user?.rol === "Profesor" && (
+              <div className="col">
+                <div className="card h-100 border-primary text-primary" onClick={() => navigate("/crear-examen")} style={{ cursor: "pointer" }}>
+                  <img src="/avatars/avatar1.jpg" className="card-img-top" alt="crearclase" />
+                  <div className="card-body">
+                    <h5 className="card-title">Crear examen</h5>
+                  </div>
+                </div>
+              </div>
+            )}
+
+
           <h2 className="mb-4">Exámenes disponibles</h2>
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             {examenes.length === 0 && (

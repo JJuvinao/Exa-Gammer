@@ -12,7 +12,7 @@ export default function MenuPrincipal() {
 
   const navigate = useNavigate();
   const { store, dispatch } = useContext(StoreContext);
-  const { user, token } = store;
+  const { user, token, clase } = store;
 
   const cargarClasesUsuario = async () => {
     try {
@@ -42,7 +42,11 @@ export default function MenuPrincipal() {
   }, [user]);
 
   const irAClase = (id, nombre) => {
-    dispatch({ type: types.SET_CLASE, payload: { id, name: nombre } });
+    const clased = {
+      nombre: nombre,
+      id_clase: id
+    };
+    dispatch({ type: types.SET_CLASE, payload: clased });
     navigate("/clase");
   };
 
@@ -153,11 +157,11 @@ export default function MenuPrincipal() {
             )}
 
             {UserClases.map((clase, idx) => (
-              <div className="col" key={clase.id || idx}>
-                <div className="card h-100 shadow" onClick={() => irAClase(clase.id, clase.nombre)} style={{ cursor: "pointer" }}>
+              <div className="col" key={clase.id_Clase || idx}>
+                <div className="card h-100 shadow" onClick={() => irAClase(clase.id_Clase, clase.nombre)} style={{ cursor: "pointer" }}>
                   <img src= {clase.imagenClase || "https://via.placeholder.com/150"}   className="card-img-top" alt="Clase" />
                   <div className="card-body">
-                    <h5 className="card-title">{clase.nombre}</h5>
+                    <h5 className="card-title">{clase.nombre} {clase.id_Clase}</h5>
                   </div>
                 </div>
               </div>
