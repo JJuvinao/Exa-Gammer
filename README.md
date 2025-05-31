@@ -4,6 +4,8 @@ Proyecto de aula para el 5° semestre
 =======
 # Getting Started with Create React App
 
+Nota: Si no quiere pasar todo los problemas de estar iniciando session y creando la clase con su examen puede ir al sigiente ruta: http://localhost:3000/juego
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
