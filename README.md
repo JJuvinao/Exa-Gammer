@@ -1,8 +1,10 @@
 <<<<<<< HEAD
 
 Configuracion de uso
+
 El codigo se ejecuta en Visual Studio Code
 Link: https://code.visualstudio.com/
+
 Junto con Node.js
 Link: https://nodejs.org/es
 
