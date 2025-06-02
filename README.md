@@ -1,4 +1,17 @@
 <<<<<<< HEAD
+
+Configuracion de uso
+El codigo se ejecuta en Visual Studio Code
+Link: https://code.visualstudio.com/
+Junto con Node.js
+Link: https://nodejs.org/es
+
+Para que pueda correr el proyecto, primero tiene que instalar el Node, una vez instalado simplemente descarge el archivo .zip del proyecto, descomprimalo luego de descargarlo 
+En VS Code seleccione abrir carpeta y busque la carpeta descomprimida del proyecto y presiona en "Abrir"
+
+Ahora tendra que ejecutar Tanto la API como el proyecto en VS code 
+Link de la API: https://github.com/JJuvinao/ProyectoAPI
+
 # Exa-Gammer
 Proyecto de aula para el 5° semestre 
 =======
