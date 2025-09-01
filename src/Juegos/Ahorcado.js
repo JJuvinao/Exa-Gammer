@@ -2,13 +2,17 @@ import "./styleAhorcado.css";
 import { useState, useContext, useEffect } from "react";
 import { StoreContext } from "../Store/StoreProvider";
 import NaNvbar from "../Components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const palabrasConPista = [
   {
     palabra: "programacion",
     pista: "Disciplina de crear software y aplicaciones.",
   },
-  { palabra: "javascript", pista: "Lenguaje de programación muy usado en la web." },
+  {
+    palabra: "javascript",
+    pista: "Lenguaje de programación muy usado en la web.",
+  },
   {
     palabra: "computadora",
     pista: "Dispositivo electrónico para procesar datos.",
@@ -47,7 +51,8 @@ const palabrasConPista = [
   },
   {
     palabra: "arqueologia",
-    pista: "Ciencia que estudia las civilizaciones antiguas a través de sus restos.",
+    pista:
+      "Ciencia que estudia las civilizaciones antiguas a través de sus restos.",
   },
   {
     palabra: "biodiversidad",
@@ -59,7 +64,8 @@ const palabrasConPista = [
   },
   {
     palabra: "filosofia",
-    pista: "Disciplina que estudia cuestiones fundamentales sobre la existencia y el conocimiento.",
+    pista:
+      "Disciplina que estudia cuestiones fundamentales sobre la existencia y el conocimiento.",
   },
   {
     palabra: "literatura",
@@ -83,24 +89,19 @@ const palabrasConPista = [
   },
 ];
 
-function obtenerPalabraYPistaAleatoria() {
-  const indice = Math.floor(Math.random() * palabrasConPista.length);
-  return palabrasConPista[indice];
-}
-
 export default function Ahorcado() {
   const [palabra, setPalabra] = useState("");
   const [pista, setPista] = useState("");
   const [letrasUsadas, setLetrasUsadas] = useState([]);
   const [intentos, setIntentos] = useState(6);
   const [juegoActivo, setJuegoActivo] = useState(true);
-  const [reinicios, setReinicios] = useState(0);
   const [resultados, setResultados] = useState(null);
   const [palabrasUsadas, setPalabrasUsadas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
 
   const { store } = useContext(StoreContext);
   const { user, token, examen } = store;
+  const navigate = useNavigate();
 
   // Al iniciar el juego
   useEffect(() => {
@@ -108,7 +109,7 @@ export default function Ahorcado() {
     setPalabra(seleccion.palabra);
     setPista(seleccion.pista);
     // eslint-disable-next-line
-  }, [reinicios]);
+  }, []);
 
   const manejarClick = (letra) => {
     if (!juegoActivo || letrasUsadas.includes(letra)) return;
@@ -127,45 +128,47 @@ export default function Ahorcado() {
 
     if (!palabraRenderizada.includes("_")) {
       setJuegoActivo(false);
-      setMostrarModal(true); // <-- agrega esto
+      setMostrarModal(true);
       const resultado = {
         usuario: user.name,
         aciertos: palabra.length,
         intentos: intentos,
         fallos: nuevasLetrasUsadas.filter((l) => !palabra.includes(l)).length,
         estado: "Ganó",
-        palabra: palabra
+        palabra: palabra,
       };
 
       const resultadoExamen = {
-        id_Estudiane: user.id,
-        id_Examen: examen.id,
-        intentos: intentos,
-        aciertos: palabra.length,
-        fallos: nuevasLetrasUsadas.filter((l) => !palabra.includes(l)).length,
-    }
+        Id_Estudiane: user.id,
+        Id_Examen: examen.id,
+        Intentos: intentos,
+        Aciertos: palabra.length,
+        Fallos: nuevasLetrasUsadas.filter((l) => !palabra.includes(l)).length,
+      };
 
       setResultados(resultado);
       guardarResultadosAPI(resultadoExamen);
     } else if (intentos - 1 === 0 && !palabra.includes(letra)) {
       setJuegoActivo(false);
-      setMostrarModal(true); // <-- agrega esto
+      setMostrarModal(true);
       const resultado = {
         usuario: user.name,
-        aciertos: palabra.split("").filter((l) => nuevasLetrasUsadas.includes(l)).length,
+        aciertos: palabra
+          .split("")
+          .filter((l) => nuevasLetrasUsadas.includes(l)).length,
         intentos: 0,
         fallos: nuevasLetrasUsadas.filter((l) => !palabra.includes(l)).length,
         estado: "Perdió",
-        palabra: palabra
+        palabra: palabra,
       };
 
       const resultadoExamen = {
-        id_Estudiane: user.id,
-        id_Examen: examen.id,
-        intentos: intentos,
-        aciertos: palabra.length,
-        fallos: nuevasLetrasUsadas.filter((l) => !palabra.includes(l)).length,
-    }
+        Id_Estudiane: user.id,
+        Id_Examen: examen.id,
+        Intentos: intentos,
+        Aciertos: palabra.length,
+        Fallos: nuevasLetrasUsadas.filter((l) => !palabra.includes(l)).length,
+      };
 
       setResultados(resultado);
       guardarResultadosAPI(resultadoExamen);
@@ -181,19 +184,24 @@ export default function Ahorcado() {
 
   async function guardarResultadosAPI(resultados) {
     try {
-      const response = await fetch("https://localhost:7248/api/Estudi_Examen/IngresarExa", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}` // Si tu API requiere autenticación
-        },
-        body: JSON.stringify(resultados)
-      });
-      if (!response.ok) {
+      const response = await fetch(
+        "https://localhost:7248/api/Estudi_Examen/IngresarExa",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token.t}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(resultados),
+        }
+      );
+      if (response.ok) {
+        console.log("Resultados guardados exitosamente.");
+      } else if (response.status === 401) {
+        console.error("Error de autenticación");
+      } else {
         throw new Error("Error al guardar los resultados");
       }
-      // Opcional: manejar respuesta
-      // const data = await response.json();
     } catch (error) {
       console.error("Error al guardar resultados:", error);
     }
@@ -207,9 +215,12 @@ export default function Ahorcado() {
     if (disponibles.length === 0) {
       // Si ya se usaron todas, reinicia la lista
       setPalabrasUsadas([]);
-      return palabrasConPista[Math.floor(Math.random() * palabrasConPista.length)];
+      return palabrasConPista[
+        Math.floor(Math.random() * palabrasConPista.length)
+      ];
     }
-    const seleccion = disponibles[Math.floor(Math.random() * disponibles.length)];
+    const seleccion =
+      disponibles[Math.floor(Math.random() * disponibles.length)];
     setPalabrasUsadas([...palabrasUsadas, seleccion.palabra]);
     return seleccion;
   }
@@ -233,21 +244,38 @@ export default function Ahorcado() {
   useEffect(() => {
     const handleEnter = (event) => {
       if (mostrarModal && event.key === "Enter") {
-        setJuegoActivo(true);
-        setLetrasUsadas([]);
-        setIntentos(6);
-        setReinicios(reinicios + 1);
-        setResultados(null);
         setMostrarModal(false);
+        navigate("/examen", { state: { examen } });
       }
     };
     window.addEventListener("keydown", handleEnter);
     return () => window.removeEventListener("keydown", handleEnter);
-  }, [mostrarModal, reinicios]);
+  }, [mostrarModal, navigate, examen]);
 
   return (
     <>
-      <NaNvbar />
+      <nav
+        className="navbar d-flex justify-content-between align-items-center px-4"
+        style={{ backgroundColor: "#586068" }}
+      >
+        <div
+          className="logo d-flex align-items-center text-white fw-bold"
+          style={{ fontSize: "1.5rem" }}
+        >
+          <img
+            src="/logo_del_sitio.png"
+            alt="Logo"
+            style={{ height: "60px", marginRight: "8px" }}
+          />
+          Exa-Gammer - Juego de ahorcado - Examen :{examen.nombre}
+        </div>
+        <button
+          onClick={() => navigate("/menu")}
+          className="btn btn-outline-light"
+        >
+          Volver al menú
+        </button>
+      </nav>
       <div className="container py-4">
         <div className="row">
           {/* Menú lateral */}
@@ -268,8 +296,14 @@ export default function Ahorcado() {
             <p className="text-muted mb-0"> En proceso desarrollo</p>
             {/* Resultados debajo del menú lateral */}
             {resultados && (
-              <div className="card mt-3 border-info" style={{ fontSize: "1.35rem" }}>
-                <div className="card-header bg-info text-white text-center p-3" style={{ fontSize: "1.5rem" }}>
+              <div
+                className="card mt-3 border-info"
+                style={{ fontSize: "1.35rem" }}
+              >
+                <div
+                  className="card-header bg-info text-white text-center p-3"
+                  style={{ fontSize: "1.5rem" }}
+                >
                   <strong>Resultados</strong>
                 </div>
                 <ul className="list-group list-group-flush">
@@ -335,23 +369,12 @@ export default function Ahorcado() {
                     </button>
                   ))}
                 </div>
-                <div className="text-center mb-3">
-                  <span className="text-secondary">Reinicios: {reinicios}</span>
-                </div>
                 <div className="d-flex justify-content-center">
                   <button
-                    className="btn btn-success btn-lg"
-                    disabled={juegoActivo}
-                    onClick={() => {
-                      setJuegoActivo(true);
-                      setLetrasUsadas([]);
-                      setIntentos(6);
-                      setReinicios(reinicios + 1);
-                      setResultados(null);
-                      setMostrarModal(false); // <-- agrega esto
-                    }}
+                    className="btn btn-secondary btn-lg"
+                    onClick={() => navigate("/examen")}
                   >
-                    Reiniciar Juego
+                    Volver al Examen
                   </button>
                 </div>
                 {/* Mostrar la palabra al finalizar el juego */}
@@ -376,45 +399,46 @@ export default function Ahorcado() {
       </div>
 
       {mostrarModal && (
-  <div
-    style={{
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100vw",
-      height: "100vh",
-      background: "rgba(0,0,0,0.7)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      zIndex: 9999,
-    }}
-  >
-    <div
-      style={{
-        background: "#fff",
-        padding: "3rem 2rem",
-        borderRadius: "20px",
-        textAlign: "center",
-        boxShadow: "0 0 30px #0008",
-        minWidth: "350px"
-      }}
-    >
-      <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>
-        {resultados?.estado === "Ganó" ? "¡Felicidades, ganaste!" : "¡Perdiste!"}
-      </h1>
-      <p style={{ fontSize: "2rem" }}>
-        La palabra era: <strong>{palabra}</strong>
-      </p>
-      <button
-        className="btn btn-primary btn-lg mt-4"
-        onClick={() => setMostrarModal(false)}
-      >
-        Cerrar
-      </button>
-    </div>
-  </div>
-)}
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0,0,0,0.7)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              padding: "3rem 2rem",
+              borderRadius: "20px",
+              textAlign: "center",
+              boxShadow: "0 0 30px #0008",
+              minWidth: "350px",
+            }}
+          >
+            <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>
+              {resultados?.estado === "Ganó"
+                ? "¡Felicidades, ganaste!"
+                : "¡Perdiste!"}
+            </h1>
+            <button
+              className="btn btn-primary btn-lg mt-4"
+              onClick={() => {
+                setMostrarModal(false);
+              }}
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

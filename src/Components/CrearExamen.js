@@ -11,40 +11,47 @@ export default function CrearExamen() {
   const [nombre, setNombre] = useState("");
   const [tema, setTema] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [imagen, setImagen] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleFileChange = (e) => {
-    setImagen(e.target.files[0]);
-  };
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState("/avatars/avatar1.jpg");
+
+  const avatarList = [
+    "/avatars/avatar1.jpg",
+    "/avatars/avatar2.jpg",
+    "/avatars/avatar3.jpg",
+    "/avatars/avatar5.jpg",
+    "/avatars/avatar6.jpg",
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const formData = new FormData();
-    formData.append("Nombre", nombre);
-    formData.append("Tema", tema);
-    formData.append("Autor", user.name);
-    formData.append("Descripcion", descripcion);
-    formData.append("ImagenExamen", imagen);
-    formData.append("Id_Clase", clase.id_clase); // Asumiendo que tu backend usa este nombre o lo infiere por la relación
+    const newexamen = {
+      Nombre: nombre,
+      Tema: tema,
+      Autor: user.name,
+      Descripcion: descripcion,
+      ImagenExamen: selectedAvatar,
+      Id_Clase: clase.id_clase,
+    };
 
     try {
       const response = await fetch("https://localhost:7248/api/Examenes", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token.t}`,
+          "Content-Type": "application/json",
         },
-        body: formData,
+        body: JSON.stringify(newexamen),
       });
 
       const responseText = await response.text();
 
       if (response.ok) {
         alert("Examen creado correctamente.");
-        console.log(clase.id);
-        //navigate("/clase");
+        navigate("/clase");
       } else {
         alert("Error al crear el examen: " + responseText);
       }
@@ -103,19 +110,33 @@ export default function CrearExamen() {
                 onChange={(e) => setDescripcion(e.target.value)}
               ></textarea>
             </div>
-            <div className="mb-3">
-              <label htmlFor="imagen" className="form-label">
-                Imagen del Examen
-              </label>
-              <input
-                type="file"
-                id="imagen"
-                className="form-control"
-                accept="image/png, image/jpeg"
-                onChange={handleFileChange}
-                required
-              />
+
+            <div className="mb-4 text-center">
+              <label className="form-label">Imagen</label>
+              <div>
+                <img
+                  src={selectedAvatar}
+                  alt="Avatar seleccionado"
+                  className="rounded-circle mb-2 border border-secondary"
+                  width="100"
+                  height="100"
+                  style={{
+                    borderWidth: "8px",
+                    borderStyle: "solid",
+                    borderColor: "#6c757d",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+              <button
+                type="button"
+                className="btn btn-outline-primary mt-2"
+                onClick={() => setShowAvatarModal(true)}
+              >
+                Seleccionar Avatar
+              </button>
             </div>
+
             <button
               type="submit"
               className="btn btn-success"
@@ -131,6 +152,47 @@ export default function CrearExamen() {
             >
               Cancelar
             </button>
+
+            {showAvatarModal && (
+              <div
+                className="modal fade show d-block"
+                style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+                onClick={() => setShowAvatarModal(false)}
+              >
+                <div
+                  className="modal-dialog modal-dialog-centered"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Selecciona un avatar</h5>
+                      <button
+                        type="button"
+                        className="btn-close"
+                        onClick={() => setShowAvatarModal(false)}
+                      ></button>
+                    </div>
+                    <div className="modal-body d-flex flex-wrap justify-content-center gap-3">
+                      {avatarList.map((avatar, idx) => (
+                        <img
+                          key={idx}
+                          src={avatar}
+                          alt={`Avatar ${idx + 1}`}
+                          className="rounded-circle border border-primary"
+                          width="80"
+                          height="80"
+                          style={{ cursor: "pointer", objectFit: "cover" }}
+                          onClick={() => {
+                            setSelectedAvatar(avatar);
+                            setShowAvatarModal(false);
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </form>
         </div>
       </div>
