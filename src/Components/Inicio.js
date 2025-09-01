@@ -1,7 +1,22 @@
 import "./stylesApi.css";
 import Navbar from "./Navbar";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { StoreContext } from "../Store/StoreProvider";
 
 export default function Inicio() {
+  const { store } = useContext(StoreContext);
+  const { user } = store;
+  const navigate = useNavigate();
+
+  const handleComenzarClick = () => {
+    if (user) {
+      navigate("/menu");
+    } else {
+      navigate("/login");
+    }
+  };
+
   return (
     <div className="page-container">
       <Navbar />
@@ -25,6 +40,16 @@ export default function Inicio() {
           </p>
         </div>
       </section>
+
+      <div className="text-center my-5">
+        <button
+          className="btn btn-primary btn-lg"
+          onClick={handleComenzarClick}
+        >
+          Comenzar
+        </button>
+      </div>
+
       <footer className="home-container-footer">
         <p>&copy; 2025 Exa-Gammer. Todos los derechos reservados.</p>
       </footer>
