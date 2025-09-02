@@ -30,9 +30,6 @@ export default function MenuPrincipal() {
 
       const data = await response.json();
       setUserClases(data);
-      console.log(data["mensaje"]);
-
-      unirseAClase();
     } catch (err) {
       console.error("Error:", err);
     }
@@ -79,7 +76,7 @@ export default function MenuPrincipal() {
       };
       console.log(estu_clase);
       const response = await fetch(
-        `https://localhost:7248/api/Estudi_Clases/Ingresar`,
+        "https://localhost:7248/api/Estudi_Clases/Ingresar",
         {
           method: "POST",
           headers: {
@@ -90,22 +87,13 @@ export default function MenuPrincipal() {
         }
       );
 
-      // Si la respuesta no es exitosa (código de estado 200-299), lanzar un error
-      if (!response.ok) {
-        // Intentar obtener el mensaje de error del cuerpo de la respuesta
-        const errorData = await response.json();
-        const errorMessage =
-          errorData.message || `Error del servidor: ${response.status}`;
-        setError(errorMessage);
-        throw new Error(errorMessage);
+      const mensj = await response.text();
+      setError(mensj);
+      if (response.ok) {
+        cargarClasesUsuario();
+        setShowModal(false);
+        setCodigoClase("");
       }
-
-      // Si la respuesta es exitosa
-      const responseData = await response.json();
-      await cargarClasesUsuario();
-      setShowModal(false);
-      setCodigoClase("");
-      alert("Te has unido a la clase correctamente");
     } catch (err) {
       // Capturar y mostrar el error, ya sea de la red o del servidor
       setError(err.message || "Error al unirse a la clase.");
