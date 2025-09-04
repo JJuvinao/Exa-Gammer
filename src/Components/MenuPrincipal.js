@@ -43,20 +43,30 @@ export default function MenuPrincipal() {
     if (user) cargarClasesUsuario();
   }, [user]);
 
-  const irAClase = (id, nombre) => {
+  const irAClase = (id, nombre, img, tema, codigo, autor) => {
     const clased = {
       name: nombre,
       id_clase: id,
+      imagen: img,
+      tema: tema,
+      autor: autor,
+      codigo: codigo,
     };
     dispatch({ type: types.SET_CLASE, payload: clased });
     navigate("/clase");
   };
 
   const cerrarSesion = () => {
-    dispatch({ type: types.SET_USER, payload: null });
-    dispatch({ type: types.SET_TOKEN, payload: null });
-    localStorage.removeItem("store");
-    navigate("/");
+    try {
+      dispatch({ type: types.SET_USER, payload: "" });
+      dispatch({ type: types.SET_TOKEN, payload: "" });
+      dispatch({ type: types.SET_CLASE, payload: "" });
+      dispatch({ type: types.SET_EXAMEN, payload: "" });
+      localStorage.removeItem("store");
+      navigate("/");
+    } catch (e) {
+      alert("Error al cerrar sesión");
+    }
   };
 
   const unirseAClase = async () => {
@@ -145,8 +155,10 @@ export default function MenuPrincipal() {
           </div>
           <ul className="nav flex-column">
             <li className="nav-item">
-              <p>{user?.rol}</p>
-              <p>{user?.correo}</p>
+              <p className="text-center mb-4">Rol:</p>
+              <p className="text-center mb-4">{user?.rol}</p>
+              <p className="text-center mb-4">Correo:</p>
+              <p className="text-center mb-4">{user?.correo}</p>
             </li>
           </ul>
         </nav>
@@ -197,7 +209,16 @@ export default function MenuPrincipal() {
               <div className="col" key={clase.id_Clase || idx}>
                 <div
                   className="card h-100 shadow"
-                  onClick={() => irAClase(clase.id_Clase, clase.nombre)}
+                  onClick={() =>
+                    irAClase(
+                      clase.id_Clase,
+                      clase.nombre,
+                      clase.imagenClase,
+                      clase.tema,
+                      clase.codigo,
+                      clase.autor
+                    )
+                  }
                   style={{ cursor: "pointer" }}
                 >
                   <img

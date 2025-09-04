@@ -6,33 +6,16 @@ import { types } from "../Store/StoreReducer";
 
 export default function Clase() {
   const [examenes, setExamenes] = useState([]);
+  const [users, setUsers] = useState([]);
   const { store, dispatch } = useContext(StoreContext);
   const { user, token, clase } = store;
   const navigate = useNavigate();
 
   useEffect(() => {
-    const cargarExamenes = async () => {
-      try {
-        const response = await fetch(
-          `https://localhost:7248/api/Examenes/ExamenesClase/${clase.id_clase}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token.t}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setExamenes(data);
-        } else {
-          console.error(await response.text());
-        }
-      } catch (error) {
-        console.error("Error al cargar los examenes", error);
-      }
-    };
-    if (clase?.id_clase) cargarExamenes();
+    if (clase?.id_clase) {
+      cargarExamenes();
+      CragarUsuariosClase();
+    }
   }, [clase]);
 
   const verExamen = (examen) => {
@@ -50,6 +33,50 @@ export default function Clase() {
     dispatch({ type: types.SET_EXAMEN, payload: exa });
 
     navigate("/examen");
+  };
+
+  const cargarExamenes = async () => {
+    try {
+      const response = await fetch(
+        `https://localhost:7248/api/Examenes/ExamenesClase/${clase.id_clase}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token.t}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setExamenes(data);
+      } else {
+        console.error(await response.text());
+      }
+    } catch (error) {
+      console.error("Error al cargar los examenes", error);
+    }
+  };
+
+  const CragarUsuariosClase = async () => {
+    try {
+      const response = await fetch(
+        `https://localhost:7248/api/Estudi_Clases/usersclase/${clase.id_clase}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token.t}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setUsers(data);
+      } else {
+        console.error(await response.text());
+      }
+    } catch (error) {
+      console.error("Error al cargar los examenes", error);
+    }
   };
 
   return (
@@ -83,14 +110,19 @@ export default function Clase() {
         <nav className="col-md-3 bg-light p-3 min-vh-100">
           <div className="text-center mb-4">
             <img
-              src={user?.img || "https://via.placeholder.com/100"}
+              src={clase.imagen || "https://via.placeholder.com/100"}
               alt="Perfil"
               className="rounded-circle mb-2"
               width="100"
               height="100"
             />
-            <h5>{user?.name}</h5>
-            <p className="text-muted">{user?.id}</p>
+            <h5>{clase?.name}</h5>
+            <p className="text-center mb-4"> Docente:</p>
+            <p className="text-muted"> {clase?.autor}</p>
+            <p className="text-center mb-4">Tema:</p>
+            <p className="text-muted"> {clase?.tema}</p>
+            <p className="text-center mb-4">Codigo de la clase:</p>
+            <p className="text-muted"> {clase?.codigo}</p>
           </div>
           <ul className="nav flex-column">
             <li className="nav-item">
@@ -159,6 +191,36 @@ export default function Clase() {
                 </div>
               </div>
             ))}
+          </div>
+
+          <div className="container mt-4">
+            <h3>Estudiantes registrados en la clase</h3>
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Rol</th>
+                  <th>Correo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users && users.length > 0 ? (
+                  users.map((est, idx) => (
+                    <tr key={est.id_Usuario || idx}>
+                      <td>{est.nombre}</td>
+                      <td>{est.rol}</td>
+                      <td>{est.correo}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3" className="text-center">
+                      No hay estudiantes registrados.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </main>
       </div>

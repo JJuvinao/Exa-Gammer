@@ -7,7 +7,14 @@ const types = {
 
 const initialState = {
   user: { name: null, id: null, rol: null, correo: null, img: null },
-  clase: { name: null, id_clase: null },
+  clase: {
+    name: null,
+    id_clase: null,
+    imagen: null,
+    tema: null,
+    autor: null,
+    codigo: null,
+  },
   token: { t: null },
   examen: {
     id: null,
