@@ -16,6 +16,7 @@ export default function Clase() {
       cargarExamenes();
       CragarUsuariosClase();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clase]);
 
   const verExamen = (examen) => {
