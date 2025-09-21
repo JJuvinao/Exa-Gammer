@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useContext } from "react";
 import { StoreContext } from "../../Store/StoreProvider";
 import CalificarYRecomendar from "./CalificaryRecomendar";
+import Navbar from "./Navbar";
 
 export default function EstuResultados() {
   const { store } = useContext(StoreContext);
@@ -9,11 +10,11 @@ export default function EstuResultados() {
   const [resultados, setResultados] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [id, setid] = useState(0);
+  const [id_user, setid_user] = useState(0);
 
   useEffect(() => {
-    if (!userresul?.id_user) {
-      cargarResultados();
-    }
+    cargarResultados();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -52,56 +53,67 @@ export default function EstuResultados() {
   };
 
   return (
-    <div className="container mt-4">
-      <h3>Resultados del Estudiante {userresul?.nombre_user}</h3>
-      {/* Sección de Resultados */}
-      <div className="card shadow ">
-        <div className="card-body">
-          {/* 4. Manejo de casos (carga, resultados, sin resultados) */}
-          {cargando ? (
-            <p>Cargando resultados...</p>
-          ) : resultados.length > 0 ? (
-            <div className="list-group mt-4">
-              {resultados.map((r, idx) => (
-                <div
-                  key={r.id}
-                  className="list-group-item list-group-item-action flex-column align-items-start mt-4"
-                  onClick={() => setMostrarModal(true)}
-                >
-                  <table className="table table-striped">
-                    <thead>
-                      <tr>
-                        <th>Intentos</th>
-                        <th>Aciertos</th>
-                        <th>Fallos</th>
-                        <th>Nota</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr key={r.id || idx}>
-                        <td>{r.intentos}</td>
-                        <td>{r.aciertos}</td>
-                        <td>{r.fallos}</td>
-                        <td>{r.nota}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <strong>Recomendación:</strong> {r.recomendacion || "Ninguna"}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p>No hay resultados para mostrar.</p>
-          )}
+    <>
+      <Navbar />
+      <div className="container mt-4">
+        <h3>Resultados del Estudiante {userresul?.nombre_user}</h3>
+        {/* Sección de Resultados */}
+        <div className="card shadow ">
+          <div className="card-body">
+            {/* 4. Manejo de casos (carga, resultados, sin resultados) */}
+            {cargando ? (
+              <p>Cargando resultados...</p>
+            ) : resultados.length > 0 ? (
+              <div className="list-group mt-4">
+                {resultados.map((r, idx) => (
+                  <div
+                    key={r.id}
+                    className="list-group-item list-group-item-action flex-column align-items-start mt-4"
+                    onClick={() => {
+                      setMostrarModal(true);
+                      setid(r.id);
+                      setid_user(r.id_Estudiane);
+                    }}
+                  >
+                    <table className="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Intentos</th>
+                          <th>Aciertos</th>
+                          <th>Fallos</th>
+                          <th>Nota</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr key={r.id || idx}>
+                          <td>{r.intentos}</td>
+                          <td>{r.aciertos}</td>
+                          <td>{r.fallos}</td>
+                          <td>{r.nota}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <strong>Recomendación:</strong>{" "}
+                    {r.recomendacion || "Ninguna"}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No hay resultados para mostrar.</p>
+            )}
+          </div>
         </div>
-      </div>
 
-      {mostrarModal && (
-        <CalificarYRecomendar
-          show={mostrarModal}
-          onClose={() => setMostrarModal(false)}
-        />
-      )}
-    </div>
+        {mostrarModal && (
+          <CalificarYRecomendar
+            show={mostrarModal}
+            id={id}
+            id_user={id_user}
+            onClose={() => setMostrarModal(false)}
+            actualizar={cargarResultados}
+          />
+        )}
+      </div>
+    </>
   );
 }
