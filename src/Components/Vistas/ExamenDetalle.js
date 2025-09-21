@@ -1,17 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
-import { StoreContext } from "../Store/StoreProvider";
-import { types } from "../Store/StoreReducer";
-import Navbar from "./Navbar";
+import { StoreContext } from "../../Store/StoreProvider";
+import { types } from "../../Store/StoreReducer";
 
 export default function ExamenDetalle() {
   const navigate = useNavigate();
-  const { dispatch } = useContext(StoreContext);
-  const { store } = useContext(StoreContext);
+  const { store, dispatch } = useContext(StoreContext);
   const { user, token, examen } = store;
 
   const [resultados, setResultados] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const fetchResultados = async () => {
@@ -20,6 +19,9 @@ export default function ExamenDetalle() {
 
       cargarResultados();
     };
+    if (user?.rol === "Profesor") {
+      CragarUsuariosExamen();
+    }
 
     fetchResultados();
   }, []);
@@ -30,6 +32,28 @@ export default function ExamenDetalle() {
 
   const entrarAlExamen = () => {
     navigate("/juego");
+  };
+
+  const CragarUsuariosExamen = async () => {
+    try {
+      const response = await fetch(
+        `https://localhost:7248/api/Estudi_Examen/UsersExamen/${examen.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token.t}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setUsers(data);
+      } else {
+        console.error(await response.text());
+      }
+    } catch (error) {
+      console.error("Error al cargar los examenes", error);
+    }
   };
 
   const cargarResultados = async () => {
@@ -64,6 +88,16 @@ export default function ExamenDetalle() {
     } finally {
       setCargando(false);
     }
+  };
+
+  const cargaruserresul = (iduser, nombre) => {
+    const estu_exa = {
+      id_user: iduser,
+      id_examen: examen.id,
+      nombre_user: nombre,
+    };
+    dispatch({ type: types.SET_USERRESUL, payload: estu_exa });
+    navigate("/resultados");
   };
 
   return (
@@ -110,7 +144,7 @@ export default function ExamenDetalle() {
           </button>
           <button
             className="btn btn-secondary mt-3 ms-3"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/clase")}
           >
             V olver
           </button>
@@ -157,6 +191,47 @@ export default function ExamenDetalle() {
           )}
         </div>
       </div>
+
+      {/* sección de clalificar estudiantes */}
+      {user?.rol === "Profesor" && (
+        <div className="container mt-4">
+          <h3>Estudiantes registrados en la clase</h3>
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Rol</th>
+                <th>Correo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users && users.length > 0 ? (
+                users.map((est, idx) => (
+                  <tr key={est.id || idx}>
+                    <td>{est.id}</td>
+                    <td>{est.nombre}</td>
+                    <td>{est.rol}</td>
+                    <td>{est.correo}</td>
+                    <button
+                      onClick={() => cargaruserresul(est.id, est.nombre)}
+                      className="btn btn-outline-light btn-sm ms-3 border-primary text-primary"
+                    >
+                      Calificar
+                    </button>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3" className="text-center">
+                    No hay estudiantes registrados.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

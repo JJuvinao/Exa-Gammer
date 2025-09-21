@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { StoreContext } from "../Store/StoreProvider";
-import { types } from "../Store/StoreReducer";
+import { StoreContext } from "../../Store/StoreProvider";
+import { types } from "../../Store/StoreReducer";
 
 export default function MenuPrincipal() {
   const [UserClases, setUserClases] = useState([]);
@@ -13,6 +13,27 @@ export default function MenuPrincipal() {
   const navigate = useNavigate();
   const { store, dispatch } = useContext(StoreContext);
   const { user, token, clase } = store;
+
+  const cargarClasesProfesor = async () => {
+    try {
+      const response = await fetch(
+        `https://localhost:7248/api/Clases/Profe_Clases/${user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token.t}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) throw new Error("Error cargando clases");
+
+      const data = await response.json();
+      setUserClases(data);
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  };
 
   const cargarClasesUsuario = async () => {
     try {
@@ -40,7 +61,13 @@ export default function MenuPrincipal() {
       navigate("/admin");
       return;
     }
-    if (user) cargarClasesUsuario();
+    if (user) {
+      if (user.rol === "Profesor") {
+        cargarClasesProfesor();
+      } else {
+        cargarClasesUsuario();
+      }
+    }
   }, [user]);
 
   const irAClase = (id, nombre, img, tema, codigo, autor) => {

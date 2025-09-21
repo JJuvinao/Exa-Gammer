@@ -14,7 +14,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 25px 60px;
+    padding: 20px 55px;
     background-color: #dcdcdc;
 }
 
@@ -57,7 +57,7 @@ body {
 
 /* SECCIÓN PRINCIPAL */
 .home-container {
-    background-image: url('./imagen/c.png');
+    background-image: url('../imagen/c.png');
     background-size: 900px 900px;
     background-position: right;
     background-repeat: no-repeat;

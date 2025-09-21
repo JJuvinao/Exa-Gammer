@@ -1,0 +1,338 @@
+/* styleheroes.css */
+
+.homes-container {
+  background-image: url('./imagenes/Fondos/logoheroes.png');
+  background-size: 1200px 800px; 
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-container {
+  background-image: url('./imagenes/Fondos/cieloazul.jpg');
+  background-size: cover; 
+  background-position: center;
+  background-repeat: no-repeat;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw; 
+}
+
+.inicio-heroes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0);
+}
+
+.inicio-contenedor {
+  background:  rgba(255, 255, 255, 0);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  padding: 40px 32px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inicio-titulo {
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: 32px;
+  margin-top: 0;
+  letter-spacing: 2px;
+  color: #ffffff;
+}
+
+.inicio-btn {
+  width: 100%;
+  padding: 16px 0;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  border: 2px solid #333;
+  border-radius: 8px;
+  background: #f8f9fa;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.inicio-btn:last-child {
+  margin-bottom: 0;
+}
+
+.inicio-btn:hover {
+  background: #333;
+  color: #fff;
+}
+
+.seccion-superior {
+  background: rgba(255,255,255,0.3);
+  padding: 10px;
+  border-radius: 10px;
+  height: 250px;       
+  overflow: auto;     
+  border: #010101;
+  border-width: 2px;
+  border-style: solid;  
+}
+
+.seccion-inferior {
+  background: rgba(220,220,220,0.3);
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+  height: 380px;        
+  overflow: auto;    
+  border: #020202;
+  border-width: 2px;
+  border-style: solid;   
+}
+
+.seleccion-personaje {
+  background: rgba(220,220,220,0.3);
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  height: 280px;    
+  width: 300px;    
+  overflow: auto;    
+  border: #333;
+  border-width: 2px;
+  border-style: solid;   
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.personajes-contenedor {
+  display: flex;
+  gap: 60px;
+  justify-content: center; 
+  align-items: flex-start;
+  margin-top: 20px;
+}
+
+.imag-tamaño {
+  height: 150px;
+  width: 220px;
+  border-radius: 10px;
+  justify-content: center; 
+  align-items: center;
+}
+
+.seccion-mundo {
+  background: rgba(220,220,220,0.3);
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+  height: 600px;
+  width: 1450px;     /* O usa 100% si el padre tiene ancho definido */
+  overflow: auto;
+  border: #020202 2px solid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-container-mundo {
+  background-image: url('./imagenes/Fondos/cielonoche.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw; 
+  display: flex;
+  align-items: center;
+}
+
+.mundo-personaje {
+  background: rgba(220,220,220,0.3);
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  height: 400px;    
+  width: 450px;    
+  overflow: auto;    
+  border: #333;
+  border-width: 2px;
+  border-style: solid;   
+}
+
+.imag-tamaño-mundo {
+  height: 250px;
+  width: 400px;
+  border-radius: 10px;
+  justify-content: center; 
+  align-items: center;
+}
+
+.mundo-contenedor {
+  display: flex;
+  gap: 30px;
+  justify-content: center; 
+  align-items: flex-start;
+  margin-top: 20px;
+}
+
+.escenario-main-container {
+  background-image: url('./imagenes/Fondos/cieloatardecer.jpg');
+  background-size: cover; 
+  background-position: center;
+  background-repeat: no-repeat;
+  justify-content: center;
+  height: 100vh;
+  width: 100%; 
+  display: flex;
+  gap: 30px;
+}
+
+.escenario-contenedor {
+  display: flex;
+  flex-direction: row;      
+  gap: 10px;               
+  justify-content: center;  
+  align-items: flex-start;  
+  width: 100%;
+}
+
+.escenario-superior {
+  background: rgba(255,255,255,0.5);
+  border-radius: 10px;
+  height: 100%;     
+  width: 1500px;      
+  border: #010101;
+  border-width: 2px;
+  border-style: solid;  
+  box-sizing: border-box;   
+  margin: 0 auto;
+}
+
+.escenario-inferior {
+  background: rgba(220,220,220,0.8);
+  border-radius: 10px;
+  height: 100%;      
+  width: 700px;  
+  border: #020202;
+  border-width: 2px;
+  border-style: solid;   
+  box-sizing: border-box;  
+  margin: 0 auto;
+}
+
+.informacion-personaje {
+  background: rgba(220,220,220,0.3);
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  height: 200px;    
+  width: 450px;    
+  overflow: auto;    
+  border: #333;
+  border-width: 2px;
+  border-style: solid;   
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-juego {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 40px;
+    border-bottom: 2px solid #ccc;
+    height: 100px; 
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.navbar-contenedor {
+  display: flex;
+  gap: 30px;
+  justify-content: center; 
+  align-items: flex-start;
+}
+
+.button-nav {
+  width: 300px;
+  padding: 10px 0;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  border: 2px solid #333;
+  border-radius: 8px;
+  background: #287cd0;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.button-accion{
+  height: 150px;
+  width: 400px;
+}
+
+.button-respuestas{
+  height: 100px;
+  width: 900px;
+}
+
+.rendirse-contenedor {
+  display: flex;
+  flex-direction: column;      
+  gap: 20px;               
+  justify-content: center;  
+  align-items: center;  
+  width: 100%;
+  height: 200px;
+}
+
+.imagen-sprite-contenedor {
+  display: flex;
+  gap: 250px;
+  justify-content: center; 
+  align-items: flex-start;
+  margin-top: 20px;
+  position: relative;
+  top: 150px;
+  left: 0px;
+}
+
+.informacion{
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.info-contenedor {
+  display: flex;
+  gap: 100px;
+  justify-content: center; 
+  align-items: flex-start;
+}
+
+.button-info{
+  width: 100px;
+  padding: 10px 0;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  border: 2px solid #333;
+  border-radius: 8px;
+  background: #287cd0;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.infoaccion-contenedor {
+  display: flex;
+  flex-direction: column;      
+  gap: 20px;               
+  justify-content: center;  
+  align-items: center;  
+  width: 100%;
+  height: 300px;
+}

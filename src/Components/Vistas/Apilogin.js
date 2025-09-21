@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { types } from "../Store/StoreReducer";
-import { StoreContext } from "../Store/StoreProvider";
+import { types } from "../../Store/StoreReducer";
+import { StoreContext } from "../../Store/StoreProvider";
 import Navbar from "./Navbar";
 
 export default function ApiLogin() {
@@ -30,13 +30,12 @@ export default function ApiLogin() {
 
       if (response.ok) {
         const usuari = await response.json();
-        const imagenSrc = usuari.user.imagen ? `data:image/"png";base64,${usuari.user.imagen}` : '';
         const user = {
           name: usuari.user.nombre,
           id: usuari.user.id,
           rol: usuari.user.rol,
           correo: usuari.user.correo,
-          img: imagenSrc
+          img: usuari.user.imagen,
         };
         Cargarusuario(user, usuari.token);
         navigate("/menu");
@@ -109,13 +108,19 @@ export default function ApiLogin() {
               <button
                 type="button"
                 className="btn btn-link p-0"
-                onClick={() => navigate("/registro")}> Registrate
+                onClick={() => navigate("/registro")}
+              >
+                {" "}
+                Registrate
               </button>
             </div>
             <button
               type="button"
               className="btn btn-link mt-3 w-100"
-              onClick={handleInicio} > Volver al inicio
+              onClick={handleInicio}
+            >
+              {" "}
+              Volver al inicio
             </button>
           </div>
         </div>

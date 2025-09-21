@@ -27,6 +27,11 @@ const initialState = {
     imagenexamen: null,
     id_juego: null,
   },
+  userresul: {
+    id_user: null,
+    id_examen: null,
+    nombre_user: null,
+  },
 };
 
 const storeReducer = (state, action) => {
@@ -50,6 +55,11 @@ const storeReducer = (state, action) => {
       return {
         ...state,
         examen: action.payload,
+      };
+    case types.SET_USERRESUL:
+      return {
+        ...state,
+        userresul: action.payload,
       };
     default:
       return state;

@@ -1,7 +1,6 @@
 import "./styleAhorcado.css";
 import { useState, useContext, useEffect } from "react";
-import { StoreContext } from "../Store/StoreProvider";
-import NaNvbar from "../Components/Navbar";
+import { StoreContext } from "../../../Store/StoreProvider";
 import { useNavigate } from "react-router-dom";
 
 const palabrasConPista = [
@@ -144,6 +143,8 @@ export default function Ahorcado() {
         Intentos: intentos,
         Aciertos: palabra.length,
         Fallos: nuevasLetrasUsadas.filter((l) => !palabra.includes(l)).length,
+        Notas: 1,
+        Recomendaciones: "hola",
       };
 
       setResultados(resultado);
@@ -168,6 +169,8 @@ export default function Ahorcado() {
         Intentos: intentos,
         Aciertos: palabra.length,
         Fallos: nuevasLetrasUsadas.filter((l) => !palabra.includes(l)).length,
+        Notas: 1,
+        Recomendaciones: "hola",
       };
 
       setResultados(resultado);
@@ -183,6 +186,7 @@ export default function Ahorcado() {
   };
 
   async function guardarResultadosAPI(resultados) {
+    console.log(resultados);
     try {
       const response = await fetch(
         "https://localhost:7248/api/Estudi_Examen/IngresarExa",

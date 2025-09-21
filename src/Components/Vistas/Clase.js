@@ -1,8 +1,8 @@
 import "./stylesApi.css";
 import { useState, useEffect, useContext } from "react";
-import { StoreContext } from "../Store/StoreProvider";
+import { StoreContext } from "../../Store/StoreProvider";
 import { useNavigate } from "react-router-dom";
-import { types } from "../Store/StoreReducer";
+import { types } from "../../Store/StoreReducer";
 
 export default function Clase() {
   const [examenes, setExamenes] = useState([]);

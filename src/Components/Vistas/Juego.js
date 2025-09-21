@@ -2,7 +2,7 @@ import "./stylesApi.css";
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { StoreContext } from "../Store/StoreProvider";
+import { StoreContext } from "../../Store/StoreProvider";
 import Navbar from "./Navbar";
 
 function CrearJuego() {
@@ -40,7 +40,7 @@ function CrearJuego() {
 
   const iraUsuario = () => {
     navigate("/usuario");
-  }
+  };
 
   return (
     <>

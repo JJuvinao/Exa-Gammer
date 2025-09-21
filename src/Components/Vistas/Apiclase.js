@@ -1,7 +1,7 @@
 import "./stylesApi.css";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { StoreContext } from "../Store/StoreProvider";
+import { StoreContext } from "../../Store/StoreProvider";
 import Navbar from "./Navbar";
 
 export default function Apiclase() {
@@ -20,7 +20,6 @@ export default function Apiclase() {
   ];
 
   const { store } = useContext(StoreContext);
-  const [imag, setImagen] = useState(null);
   const navigate = useNavigate();
   const { user, token } = store;
 
@@ -53,7 +52,7 @@ export default function Apiclase() {
         alert(reponText);
         navigate("/menu");
       } else {
-        alert(reponText,response.status);
+        alert(reponText, response.status);
       }
     } catch (error) {
       console.error("Error al enviar los datos a clase:", error);
