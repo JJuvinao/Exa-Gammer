@@ -1,9 +1,19 @@
 import { useState, useEffect } from "react";
+import { useContext } from "react";
+import { StoreContext } from "../../Store/StoreProvider";
 
-export default function CalificarYRecomendar({ show, onClose }) {
+export default function CalificarYRecomendar({
+  show,
+  onClose,
+  id,
+  id_user,
+  actualizar,
+}) {
   const [nota, setNota] = useState("");
   const [recomendacion, setRecomendacion] = useState("");
   const [error, setError] = useState("");
+  const { store } = useContext(StoreContext);
+  const { token } = store;
 
   useEffect(() => {
     if (!show) {
@@ -13,7 +23,7 @@ export default function CalificarYRecomendar({ show, onClose }) {
     }
   }, [show]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const valorNota = parseFloat(nota.replace(",", "."));
     if (isNaN(valorNota) || valorNota < 0 || valorNota > 5) {
@@ -21,9 +31,38 @@ export default function CalificarYRecomendar({ show, onClose }) {
       return;
     }
     setError("");
-    // Aquí puedes manejar el envío de los datos (nota y recomendación)
-    alert("¡Calificación y recomendación enviadas!");
-    onClose();
+
+    try {
+      const est_exa = {
+        Id_estu_exa: id,
+        Id_estu: id_user,
+        Nota: valorNota,
+        Recomendacion: recomendacion,
+      };
+      const res = await fetch(
+        `https://localhost:7248/api/Estudi_Examen/Calificar`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token.t}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(est_exa),
+        }
+      );
+
+      if (res.ok) {
+        alert("Calificación enviada correctamente");
+        actualizar();
+        onClose();
+      } else if (res.status === 401) {
+        throw new Error("No autorizado");
+      } else {
+        throw new Error("Error al cargar los resultados");
+      }
+    } catch (e) {
+      setError(e.message);
+    }
   };
 
   if (!show) {
