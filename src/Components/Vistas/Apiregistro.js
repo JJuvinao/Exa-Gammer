@@ -38,7 +38,7 @@ export default function Apiregistro() {
         setImagen(null);
       }
     }
-  }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -48,6 +48,7 @@ export default function Apiregistro() {
     const password = form.password.value;
     const rol = form.category.value;
     const correo = form.correo.value;
+    const imge = "/avatars/fotoperfil.png";
 
     await BuscarUser(username);
 
@@ -58,19 +59,21 @@ export default function Apiregistro() {
     if (usuarioEncontrado) {
       alert("Nombre de usuario ya existente: " + usuarioEncontrado.username);
     } else {
-      const formData = new FormData();
-      formData.append("nombre", username);
-      formData.append("contrasena", password);
-      formData.append("rol", rol);
-      formData.append("correo", correo);
-      if (imag) {
-        formData.append("imagen", imag);
-      }
+      const newuser = {
+        Nombre: username,
+        Contrasena: password,
+        Rol: rol,
+        Correo: correo,
+        Imagen: imge,
+      };
 
       try {
         const response = await fetch("https://localhost:7248/api/Usuarios", {
           method: "POST",
-          body: formData, // No pongas headers aquí
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newuser),
         });
         const responseText = await response.text();
         if (response.ok) {
@@ -96,26 +99,58 @@ export default function Apiregistro() {
         <div className="container mt-5">
           <div className="row justify-content-center">
             <div className="col-md-6">
-              <form onSubmit={handleSubmit} className="border p-4 shadow rounded bg-light">
+              <form
+                onSubmit={handleSubmit}
+                className="border p-4 shadow rounded bg-light"
+              >
+                <div className="mb-4 text-center">
+                  <img
+                    src="/avatars/fotoperfil.png"
+                    alt="Logo"
+                    style={{
+                      height: "152px",
+                      marginRight: "8px",
+                      verticalAlign: "middle",
+                    }}
+                  />
+                </div>
+
                 <div className="mb-3">
                   <label htmlFor="username" className="form-label">
                     Nombre de usuario
                   </label>
-                  <input type="text" className="form-control" id="username" name="username" required />
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="username"
+                    name="username"
+                    required
+                  />
                 </div>
 
                 <div className="mb-3">
                   <label htmlFor="password" className="form-label">
                     Contraseña
                   </label>
-                  <input type="password" className="form-control" id="password" name="password" required />
+                  <input
+                    type="password"
+                    className="form-control"
+                    id="password"
+                    name="password"
+                    required
+                  />
                 </div>
 
                 <div className="mb-3">
                   <label htmlFor="category" className="form-label">
                     Rol
                   </label>
-                  <select className="form-select" id="category" name="category" required>
+                  <select
+                    className="form-select"
+                    id="category"
+                    name="category"
+                    required
+                  >
                     <option value="">Seleccionar su rol</option>
                     <option value="Profesor">Profesor</option>
                     <option value="Estudiante">Estudiante</option>
@@ -126,24 +161,20 @@ export default function Apiregistro() {
                   <label htmlFor="correo" className="form-label">
                     Correo electrónico
                   </label>
-                  <input type="email" className="form-control" id="correo" name="correo" required />
-                </div>
-
-                <div className="mb-4">
-                  <label htmlFor="imagen" className="form-label">
-                    Imagen de perfil
-                  </label>
                   <input
-                    type="file"
+                    type="email"
                     className="form-control"
-                    id="imagen"
-                    name="imagen"
-                    accept="image/png, image/jpeg"
-                    onChange={handelImagen}
+                    id="correo"
+                    name="correo"
+                    required
                   />
                 </div>
 
-                <button type="submit" className="btn btn-primary w-100" disabled={isLoading}>
+                <button
+                  type="submit"
+                  className="btn btn-primary w-100"
+                  disabled={isLoading}
+                >
                   {isLoading ? "Creando usuario..." : "Registrar"}
                 </button>
 
@@ -152,13 +183,19 @@ export default function Apiregistro() {
                   <button
                     type="button"
                     className="btn btn-link p-0"
-                    onClick={() => navigate("/login")}> Inicia sesión aquí
+                    onClick={() => navigate("/login")}
+                  >
+                    {" "}
+                    Inicia sesión aquí
                   </button>
                 </div>
                 <button
                   type="button"
                   className="btn btn-link mt-3 w-100"
-                  onClick={handleInicio} > Volver al inicio
+                  onClick={handleInicio}
+                >
+                  {" "}
+                  Volver al inicio
                 </button>
               </form>
             </div>

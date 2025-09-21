@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { StoreContext } from "../Store/StoreProvider";
-import { types } from "../Store/StoreReducer";
+import { StoreContext } from "../../Store/StoreProvider";
+import { types } from "../../Store/StoreReducer";
 
 export default function MenuPrincipal() {
   const [UserClases, setUserClases] = useState([]);
@@ -13,6 +13,27 @@ export default function MenuPrincipal() {
   const navigate = useNavigate();
   const { store, dispatch } = useContext(StoreContext);
   const { user, token, clase } = store;
+
+  const cargarClasesProfesor = async () => {
+    try {
+      const response = await fetch(
+        `https://localhost:7248/api/Clases/Profe_Clases/${user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token.t}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) throw new Error("Error cargando clases");
+
+      const data = await response.json();
+      setUserClases(data);
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  };
 
   const cargarClasesUsuario = async () => {
     try {
@@ -30,9 +51,6 @@ export default function MenuPrincipal() {
 
       const data = await response.json();
       setUserClases(data);
-      console.log(data["mensaje"]);
-
-      unirseAClase();
     } catch (err) {
       console.error("Error:", err);
     }
@@ -43,23 +61,39 @@ export default function MenuPrincipal() {
       navigate("/admin");
       return;
     }
-    if (user) cargarClasesUsuario();
+    if (user) {
+      if (user.rol === "Profesor") {
+        cargarClasesProfesor();
+      } else {
+        cargarClasesUsuario();
+      }
+    }
   }, [user]);
 
-  const irAClase = (id, nombre) => {
+  const irAClase = (id, nombre, img, tema, codigo, autor) => {
     const clased = {
       name: nombre,
       id_clase: id,
+      imagen: img,
+      tema: tema,
+      autor: autor,
+      codigo: codigo,
     };
     dispatch({ type: types.SET_CLASE, payload: clased });
     navigate("/clase");
   };
 
   const cerrarSesion = () => {
-    dispatch({ type: types.SET_USER, payload: null });
-    dispatch({ type: types.SET_TOKEN, payload: null });
-    localStorage.removeItem("store");
-    navigate("/");
+    try {
+      dispatch({ type: types.SET_USER, payload: "" });
+      dispatch({ type: types.SET_TOKEN, payload: "" });
+      dispatch({ type: types.SET_CLASE, payload: "" });
+      dispatch({ type: types.SET_EXAMEN, payload: "" });
+      localStorage.removeItem("store");
+      navigate("/");
+    } catch (e) {
+      alert("Error al cerrar sesión");
+    }
   };
 
   const unirseAClase = async () => {
@@ -79,7 +113,7 @@ export default function MenuPrincipal() {
       };
       console.log(estu_clase);
       const response = await fetch(
-        `https://localhost:7248/api/Estudi_Clases/Ingresar`,
+        "https://localhost:7248/api/Estudi_Clases/Ingresar",
         {
           method: "POST",
           headers: {
@@ -90,22 +124,13 @@ export default function MenuPrincipal() {
         }
       );
 
-      // Si la respuesta no es exitosa (código de estado 200-299), lanzar un error
-      if (!response.ok) {
-        // Intentar obtener el mensaje de error del cuerpo de la respuesta
-        const errorData = await response.json();
-        const errorMessage =
-          errorData.message || `Error del servidor: ${response.status}`;
-        setError(errorMessage);
-        throw new Error(errorMessage);
+      const mensj = await response.text();
+      setError(mensj);
+      if (response.ok) {
+        cargarClasesUsuario();
+        setShowModal(false);
+        setCodigoClase("");
       }
-
-      // Si la respuesta es exitosa
-      const responseData = await response.json();
-      await cargarClasesUsuario();
-      setShowModal(false);
-      setCodigoClase("");
-      alert("Te has unido a la clase correctamente");
     } catch (err) {
       // Capturar y mostrar el error, ya sea de la red o del servidor
       setError(err.message || "Error al unirse a la clase.");
@@ -157,8 +182,10 @@ export default function MenuPrincipal() {
           </div>
           <ul className="nav flex-column">
             <li className="nav-item">
-              <p>{user?.rol}</p>
-              <p>{user?.correo}</p>
+              <p className="text-center mb-4">Rol:</p>
+              <p className="text-center mb-4">{user?.rol}</p>
+              <p className="text-center mb-4">Correo:</p>
+              <p className="text-center mb-4">{user?.correo}</p>
             </li>
           </ul>
         </nav>
@@ -209,7 +236,16 @@ export default function MenuPrincipal() {
               <div className="col" key={clase.id_Clase || idx}>
                 <div
                   className="card h-100 shadow"
-                  onClick={() => irAClase(clase.id_Clase, clase.nombre)}
+                  onClick={() =>
+                    irAClase(
+                      clase.id_Clase,
+                      clase.nombre,
+                      clase.imagenClase,
+                      clase.tema,
+                      clase.codigo,
+                      clase.autor
+                    )
+                  }
                   style={{ cursor: "pointer" }}
                 >
                   <img

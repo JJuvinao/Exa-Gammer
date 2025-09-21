@@ -7,7 +7,14 @@ const types = {
 
 const initialState = {
   user: { name: null, id: null, rol: null, correo: null, img: null },
-  clase: { name: null, id_clase: null },
+  clase: {
+    name: null,
+    id_clase: null,
+    imagen: null,
+    tema: null,
+    autor: null,
+    codigo: null,
+  },
   token: { t: null },
   examen: {
     id: null,
@@ -19,6 +26,11 @@ const initialState = {
     fecha: null,
     imagenexamen: null,
     id_juego: null,
+  },
+  userresul: {
+    id_user: null,
+    id_examen: null,
+    nombre_user: null,
   },
 };
 
@@ -43,6 +55,11 @@ const storeReducer = (state, action) => {
       return {
         ...state,
         examen: action.payload,
+      };
+    case types.SET_USERRESUL:
+      return {
+        ...state,
+        userresul: action.payload,
       };
     default:
       return state;

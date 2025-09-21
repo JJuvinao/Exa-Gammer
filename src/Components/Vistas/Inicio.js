@@ -2,7 +2,7 @@ import "./stylesApi.css";
 import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { StoreContext } from "../Store/StoreProvider";
+import { StoreContext } from "../../Store/StoreProvider";
 
 export default function Inicio() {
   const { store } = useContext(StoreContext);
