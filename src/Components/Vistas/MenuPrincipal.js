@@ -68,6 +68,7 @@ export default function MenuPrincipal() {
         cargarClasesUsuario();
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const irAClase = (id, nombre, img, tema, codigo, autor) => {

@@ -84,7 +84,8 @@ export default function Apiclase() {
 
   useEffect(() => {
     if (user) cargarClasesUsuario();
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="container-fluid p-0">

@@ -5,7 +5,6 @@ import Navbar from "./Navbar";
 export default function Apiregistro() {
   const [usuarios, setUsuarios] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [imag, setImagen] = useState(null);
   const navigate = useNavigate();
 
   const BuscarUser = async (username) => {
@@ -26,18 +25,6 @@ export default function Apiregistro() {
 
   const handleInicio = () => {
     navigate("/");
-  };
-
-  const handelImagen = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.type === "image/png" || file.type === "image/jpeg") {
-        setImagen(file);
-      } else {
-        alert("Solo se permiten imágenes JPG o PNG.");
-        setImagen(null);
-      }
-    }
   };
 
   const handleSubmit = async (event) => {

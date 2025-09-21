@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { useContext } from "react";
 import { StoreContext } from "../../Store/StoreProvider";
 import CalificarYRecomendar from "./CalificaryRecomendar";
@@ -11,7 +11,10 @@ export default function EstuResultados() {
   const [mostrarModal, setMostrarModal] = useState(false);
 
   useEffect(() => {
-    cargarResultados();
+    if (!userresul?.id_user) {
+      cargarResultados();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const cargarResultados = async () => {
