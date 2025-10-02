@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { types } from "../../Store/StoreReducer";
 import { StoreContext } from "../../Store/StoreProvider";
 import Navbar from "./Navbar";
+import { ModalMensaje } from "./modales/modalmensaje";
 
 export default function ApiLogin() {
   const navigate = useNavigate();
   const { dispatch } = useContext(StoreContext);
   const [isLoading, setIsLoading] = useState(false);
+  const [mostarmensaje, setModalMensaje] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -40,8 +43,9 @@ export default function ApiLogin() {
         Cargarusuario(user, usuari.token);
         navigate("/menu");
       } else {
-        const errorMessage = await response.text();
-        alert(errorMessage);
+        setErrorMessage(await response.text());
+        setModalMensaje(true);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error al enviar los datos:", error);
@@ -125,6 +129,13 @@ export default function ApiLogin() {
           </div>
         </div>
       </div>
+      {mostarmensaje && (
+        <ModalMensaje
+          mensaje={errorMessage}
+          mostrar={mostarmensaje}
+          onClose={() => setModalMensaje(false)}
+        />
+      )}
     </div>
   );
 }

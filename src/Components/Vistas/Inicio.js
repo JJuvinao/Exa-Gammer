@@ -11,9 +11,9 @@ export default function Inicio() {
 
   const handleComenzarClick = () => {
     if (user) {
-      navigate("/menu");
+      navigate("/heroes");
     } else {
-      navigate("/login");
+      navigate("/heroes");
     }
   };
 
