@@ -1,20 +1,29 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 import { StoreContext } from "../../Store/StoreProvider";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
+import PreguntaForm from "./modales/PreguntaForm";
+import AhorcadoForm from "./modales/AhorcadoFrom";
+import { ExamService } from "../Logica/ExamService";
 
 export default function CrearExamen() {
   const { store } = useContext(StoreContext);
   const { clase, token, user } = store;
   const navigate = useNavigate();
+  const preguntaFormRef = useRef(null);
+  const palabraFromRef = useRef(null);
 
   const [nombre, setNombre] = useState("");
   const [tema, setTema] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [formulario, setFormulario] = useState(false);
+  const [from, setFrom] = useState(null);
+  const [juego, setJuego] = useState();
 
   const [showAvatarModal, setShowAvatarModal] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState("/avatars/avatar1.jpg");
+  const [Njuego, setNjuego] = useState([]);
 
   const avatarList = [
     "/avatars/avatar1.jpg",
@@ -24,8 +33,62 @@ export default function CrearExamen() {
     "/avatars/avatar6.jpg",
   ];
 
-  const handleSubmit = async (e) => {
+  useEffect(() => {
+    cargarJuego();
+  }, []);
+
+  const cargarJuego = async () => {
+    try {
+      const res = await fetch(`https://localhost:7248/api/juego`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      setNjuego(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const mostarformulario = (value) => {
+    if (value > 0) {
+      setFormulario(true);
+      setJuego(parseInt(value));
+      switch (parseInt(value)) {
+        case 1:
+          setFrom(<AhorcadoForm ref={palabraFromRef} />);
+          break;
+        case 2:
+          setFrom(<PreguntaForm ref={preguntaFormRef} />);
+          break;
+        default:
+          break;
+      }
+    } else {
+      setFormulario(false);
+    }
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
+
+    let result = { errors: {}, data: null };
+    switch (juego) {
+      case 1:
+        result = palabraFromRef.current.validate();
+        break;
+      case 2:
+        result = preguntaFormRef.current.validate();
+        break;
+      default:
+        break;
+    }
+
+    if (result.errors && Object.keys(result.errors).length > 0) {
+      return;
+    }
+
     setIsLoading(true);
 
     const newexamen = {
@@ -35,32 +98,18 @@ export default function CrearExamen() {
       Descripcion: descripcion,
       ImagenExamen: selectedAvatar,
       Id_Clase: clase.id_clase,
+      Id_Juego: juego,
     };
 
-    try {
-      const response = await fetch("https://localhost:7248/api/Examenes", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token.t}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newexamen),
-      });
+    console.log("Datos del examen:", newexamen);
+    console.log("Datos del juego:", result.data);
 
-      const responseText = await response.text();
-
-      if (response.ok) {
-        alert("Examen creado correctamente.");
-        navigate("/clase");
-      } else {
-        alert("Error al crear el examen: " + responseText);
-      }
-    } catch (error) {
-      console.error("Error al enviar examen:", error);
-      alert("Ocurrió un error inesperado.");
-    } finally {
-      setIsLoading(false);
-    }
+    ExamService({
+      examen: newexamen,
+      data: result.data,
+      juego: juego,
+      token: token.t,
+    });
   };
 
   return (
@@ -110,6 +159,28 @@ export default function CrearExamen() {
                 onChange={(e) => setDescripcion(e.target.value)}
               ></textarea>
             </div>
+
+            <div className="mb-3">
+              <label htmlFor="category" className="form-label">
+                Juego
+              </label>
+              <select
+                className="form-select"
+                id="category"
+                name="category"
+                onChange={(e) => mostarformulario(e.target.value)}
+                required
+              >
+                <option value="">Seleccionar su juego</option>
+                {Njuego.map((n, idx) => (
+                  <option key={n.id || idx} value={idx + 1}>
+                    {n.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {formulario && from}
 
             <div className="mb-4 text-center">
               <label className="form-label">Imagen</label>

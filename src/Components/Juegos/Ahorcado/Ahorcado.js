@@ -94,7 +94,7 @@ export default function Ahorcado() {
   const [letrasUsadas, setLetrasUsadas] = useState([]);
   const [intentos, setIntentos] = useState(6);
   const [juegoActivo, setJuegoActivo] = useState(true);
-  const [resultados, setResultados] = useState(null);
+  const [resultados, setResultados] = useState(0);
   const [palabrasUsadas, setPalabrasUsadas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
 
@@ -186,7 +186,6 @@ export default function Ahorcado() {
   };
 
   async function guardarResultadosAPI(resultados) {
-    console.log(resultados);
     try {
       const response = await fetch(
         "https://localhost:7248/api/Estudi_Examen/IngresarExa",
@@ -284,48 +283,32 @@ export default function Ahorcado() {
         <div className="row">
           {/* Menú lateral */}
           <div className="col-md-3 mb-4">
-            <div className="card shadow-sm bg-light">
-              <div className="card-body">
-                <h5 className="card-title mb-3">Menú</h5>
-                <ul className="list-group mb-3">
-                  <li className="list-group-item">Palabra</li>
-                  <li className="list-group-item">Oración</li>
-                  <li className="list-group-item">Párrafo</li>
-                </ul>
-                <p className="text-muted mb-0">
-                  <small>Desarrollado por: {user.name}</small>
-                </p>
-              </div>
-            </div>
-            <p className="text-muted mb-0"> En proceso desarrollo</p>
             {/* Resultados debajo del menú lateral */}
-            {resultados && (
+            <div
+              className="card mt-3 border-info"
+              style={{ fontSize: "1.35rem" }}
+            >
               <div
-                className="card mt-3 border-info"
-                style={{ fontSize: "1.35rem" }}
+                className="card-header bg-info text-white text-center p-3"
+                style={{ fontSize: "1.5rem" }}
               >
-                <div
-                  className="card-header bg-info text-white text-center p-3"
-                  style={{ fontSize: "1.5rem" }}
-                >
-                  <strong>Resultados</strong>
-                </div>
-                <ul className="list-group list-group-flush">
-                  <li className="list-group-item py-3">
-                    <strong>Aciertos:</strong> {resultados.aciertos}
-                  </li>
-                  <li className="list-group-item py-3">
-                    <strong>Intentos restantes:</strong> {resultados.intentos}
-                  </li>
-                  <li className="list-group-item py-3">
-                    <strong>Fallos:</strong> {resultados.fallos}
-                  </li>
-                  <li className="list-group-item py-3">
-                    <strong>Estado:</strong> {resultados.estado}
-                  </li>
-                </ul>
+                <strong>Resultados</strong>
               </div>
-            )}
+              <ul className="list-group list-group-flush">
+                <li className="list-group-item py-3">
+                  <strong>Aciertos:</strong> {resultados.aciertos}
+                </li>
+                <li className="list-group-item py-3">
+                  <strong>Intentos restantes:</strong> {resultados.intentos}
+                </li>
+                <li className="list-group-item py-3">
+                  <strong>Fallos:</strong> {resultados.fallos}
+                </li>
+                <li className="list-group-item py-3">
+                  <strong>Estado:</strong> {resultados.estado}
+                </li>
+              </ul>
+            </div>
           </div>
 
           {/* Juego */}

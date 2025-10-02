@@ -112,7 +112,6 @@ export default function MenuPrincipal() {
         Id_Clase: clase.id_clase,
         Codigo: codigoClase,
       };
-      console.log(estu_clase);
       const response = await fetch(
         "https://localhost:7248/api/Estudi_Clases/Ingresar",
         {

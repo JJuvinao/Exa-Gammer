@@ -72,7 +72,7 @@ export default function Clase() {
       if (response.ok) {
         const data = await response.json();
         setUsers(data);
-      } else {
+      } else if (response.status === 404) {
         console.error(await response.text());
       }
     } catch (error) {

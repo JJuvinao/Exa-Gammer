@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import { StoreContext } from "../../Store/StoreProvider";
 import { types } from "../../Store/StoreReducer";
+import ConteExam from "./ConteExam";
 
 export default function ExamenDetalle() {
   const navigate = useNavigate();
@@ -46,12 +47,16 @@ export default function ExamenDetalle() {
           },
         }
       );
-      if (response.ok) {
-        const data = await response.json();
-        setUsers(data);
-      } else {
-        console.error(await response.text());
+      if (!response.ok) {
+        if (response.status === 404) {
+          console.warn("No se encontraron usuarios para este examen.");
+          return; // No sigue ejecutando
+        }
+        throw new Error(`Error HTTP: ${response.status}`);
       }
+
+      const data = await response.json();
+      setUsers(data);
     } catch (error) {
       console.error("Error al cargar los examenes", error);
     }
@@ -152,6 +157,15 @@ export default function ExamenDetalle() {
         </div>
       </div>
 
+      {/* Seccu¿ion de Contenido del examen, solo docentes*/}
+      {user?.rol === "Profesor" && (
+        <ConteExam
+          codigo={examen.codigo}
+          token={token.t}
+          id_Juego={examen.id_juego}
+        />
+      )}
+
       {/* Sección de Resultados */}
       <div className="card shadow mt-4">
         <div className="card-body">
@@ -214,12 +228,14 @@ export default function ExamenDetalle() {
                     <td>{est.nombre}</td>
                     <td>{est.rol}</td>
                     <td>{est.correo}</td>
-                    <button
-                      onClick={() => cargaruserresul(est.id, est.nombre)}
-                      className="btn btn-outline-light btn-sm ms-3 border-primary text-primary"
-                    >
-                      Calificar
-                    </button>
+                    <td>
+                      <button
+                        onClick={() => cargaruserresul(est.id, est.nombre)}
+                        className="btn btn-outline-light btn-sm ms-3 border-primary text-primary"
+                      >
+                        Calificar
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
