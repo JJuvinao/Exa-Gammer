@@ -10,7 +10,7 @@ export default function Apiregistro() {
   const BuscarUser = async (username) => {
     try {
       const response = await fetch(
-        `https://localhost:7248/api/Usuarios/GetUsername/${username}`
+        `https://apiexagammer.somee.com/api/Usuarios/GetUsername/${username}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -55,13 +55,16 @@ export default function Apiregistro() {
       };
 
       try {
-        const response = await fetch("https://localhost:7248/api/Usuarios", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newuser),
-        });
+        const response = await fetch(
+          "https://apiexagammer.somee.com/api/Usuarios/Registro",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newuser),
+          }
+        );
         const responseText = await response.text();
         if (response.ok) {
           alert(responseText);

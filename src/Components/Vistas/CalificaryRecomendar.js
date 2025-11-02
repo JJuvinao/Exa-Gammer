@@ -40,7 +40,7 @@ export default function CalificarYRecomendar({
         Recomendacion: recomendacion,
       };
       const res = await fetch(
-        `https://localhost:7248/api/Estudi_Examen/Calificar`,
+        `https://apiexagammer.somee.com/api/Estudi_Examen/Calificar`,
         {
           method: "PUT",
           headers: {

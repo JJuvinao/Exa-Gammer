@@ -13,7 +13,9 @@ function ListaUsuarios() {
 
   const obtenerUsuarios = async () => {
     try {
-      const respuesta = await fetch("https://localhost:7248/api/usuarios");
+      const respuesta = await fetch(
+        "https://apiexagammer.somee.com/api/usuarios"
+      );
       const datos = await respuesta.json();
       setUsuarios(datos);
     } catch (error) {
@@ -29,7 +31,7 @@ function ListaUsuarios() {
 
     try {
       const respuesta = await fetch(
-        `https://localhost:7248/api/usuarios/${id}`,
+        `https://apiexagammer.somee.com/api/usuarios/${id}`,
         {
           method: "DELETE",
         }

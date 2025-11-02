@@ -35,18 +35,19 @@ export default function Apiclase() {
       ImagenClase: selectedAvatar,
       Id_Profe: user.id,
     };
-
-    // Guardar clase
     try {
       console.log("Enviando datos a clase:", newclase);
-      const response = await fetch("https://localhost:7248/api/Clases", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token.t}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newclase),
-      });
+      const response = await fetch(
+        "https://apiexagammer.somee.com/api/Clases",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token.t}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newclase),
+        }
+      );
       const reponText = await response.text();
       if (response.ok) {
         alert(reponText);
@@ -64,7 +65,7 @@ export default function Apiclase() {
   const cargarClasesUsuario = async () => {
     try {
       const response = await fetch(
-        `https://localhost:7248/api/Clases/Profe_Clases/${user.id}`,
+        `https://apiexagammer.somee.com/api/Clases/Profe_Clases/${user.id}`,
         {
           headers: {
             Authorization: `Bearer ${token.t}`,

@@ -39,7 +39,7 @@ export default function ExamenDetalle() {
   const CragarUsuariosExamen = async () => {
     try {
       const response = await fetch(
-        `https://localhost:7248/api/Estudi_Examen/UsersExamen/${examen.id}`,
+        `https://apiexagammer.somee.com/api/Estudi_Examen/UsersExamen/${examen.id}`,
         {
           headers: {
             Authorization: `Bearer ${token.t}`,
@@ -70,7 +70,7 @@ export default function ExamenDetalle() {
         Id_Examen: examen.id,
       };
       const res = await fetch(
-        `https://localhost:7248/api/Estudi_Examen/get_estu_exa`,
+        `https://apiexagammer.somee.com/api/Estudi_Examen/get_estu_exa`,
         {
           method: "POST",
           headers: {

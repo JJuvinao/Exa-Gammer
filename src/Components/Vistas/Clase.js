@@ -39,7 +39,7 @@ export default function Clase() {
   const cargarExamenes = async () => {
     try {
       const response = await fetch(
-        `https://localhost:7248/api/Examenes/ExamenesClase/${clase.id_clase}`,
+        `https://apiexagammer.somee.com/api/Examenes/ExamenesClase/${clase.id_clase}`,
         {
           headers: {
             Authorization: `Bearer ${token.t}`,
@@ -61,7 +61,7 @@ export default function Clase() {
   const CragarUsuariosClase = async () => {
     try {
       const response = await fetch(
-        `https://localhost:7248/api/Estudi_Clases/usersclase/${clase.id_clase}`,
+        `https://apiexagammer.somee.com/api/Estudi_Clases/usersclase/${clase.id_clase}`,
         {
           headers: {
             Authorization: `Bearer ${token.t}`,

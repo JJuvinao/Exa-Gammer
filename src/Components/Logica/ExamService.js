@@ -3,7 +3,7 @@ export const ExamService = async ({ examen, data, juego, token }) => {
   var exa = {};
   switch (juego) {
     case 2:
-      url = "https://localhost:7248/api/Examenes/Heroes";
+      url = "https://apiexagammer.somee.com/api/Examenes/Heroes";
       exa = {
         Nombre: examen.Nombre,
         Tema: examen.Tema,
@@ -16,7 +16,7 @@ export const ExamService = async ({ examen, data, juego, token }) => {
       };
       break;
     case 1:
-      url = "https://localhost:7248/api/Examenes/Ahorcado";
+      url = "https://apiexagammer.somee.com/api/Examenes/Ahorcado";
       exa = {
         Nombre: examen.Nombre,
         Tema: examen.Tema,
@@ -58,10 +58,10 @@ export async function ConteExamService({ codigoe, tokene, idjuego }) {
   var url;
   switch (idjuego) {
     case 1:
-      url = `https://localhost:7248/api/Examenes/GetAhorcado/${codigoe}`;
+      url = `https://apiexagammer.somee.com/api/Examenes/GetAhorcado/${codigoe}`;
       break;
     case 2:
-      url = `https://localhost:7248/api/Examenes/GetHeroes/${codigoe}`;
+      url = `https://apiexagammer.somee.com/api/Examenes/GetHeroes/${codigoe}`;
       break;
     default:
       break;

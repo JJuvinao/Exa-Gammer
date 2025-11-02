@@ -39,7 +39,7 @@ export default function CrearExamen() {
 
   const cargarJuego = async () => {
     try {
-      const res = await fetch(`https://localhost:7248/api/juego`, {
+      const res = await fetch(`https://apiexagammer.somee.com/api/juego`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -88,9 +88,7 @@ export default function CrearExamen() {
     if (result.errors && Object.keys(result.errors).length > 0) {
       return;
     }
-
     setIsLoading(true);
-
     const newexamen = {
       Nombre: nombre,
       Tema: tema,
@@ -100,10 +98,6 @@ export default function CrearExamen() {
       Id_Clase: clase.id_clase,
       Id_Juego: juego,
     };
-
-    console.log("Datos del examen:", newexamen);
-    console.log("Datos del juego:", result.data);
-
     ExamService({
       examen: newexamen,
       data: result.data,

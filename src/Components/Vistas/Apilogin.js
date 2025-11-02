@@ -23,7 +23,7 @@ export default function ApiLogin() {
     };
 
     try {
-      const response = await fetch("https://localhost:7248/api/Login", {
+      const response = await fetch("https://apiexagammer.somee.com/api/Login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -17,7 +17,7 @@ export default function MenuPrincipal() {
   const cargarClasesProfesor = async () => {
     try {
       const response = await fetch(
-        `https://localhost:7248/api/Clases/Profe_Clases/${user.id}`,
+        `https://apiexagammer.somee.com/api/Clases/Profe_Clases/${user.id}`,
         {
           headers: {
             Authorization: `Bearer ${token.t}`,
@@ -38,7 +38,7 @@ export default function MenuPrincipal() {
   const cargarClasesUsuario = async () => {
     try {
       const response = await fetch(
-        `https://localhost:7248/api/Estudi_Clases/${user.id}`,
+        `https://apiexagammer.somee.com/api/Estudi_Clases/${user.id}`,
         {
           headers: {
             Authorization: `Bearer ${token.t}`,
@@ -113,7 +113,7 @@ export default function MenuPrincipal() {
         Codigo: codigoClase,
       };
       const response = await fetch(
-        "https://localhost:7248/api/Estudi_Clases/Ingresar",
+        "https://apiexagammer.somee.com/api/Estudi_Clases/Ingresar",
         {
           method: "POST",
           headers: {

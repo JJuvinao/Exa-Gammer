@@ -26,7 +26,7 @@ export default function EstuResultados() {
         Id_Examen: userresul.id_examen,
       };
       const res = await fetch(
-        `https://localhost:7248/api/Estudi_Examen/get_estu_exa`,
+        `https://apiexagammer.somee.com/api/Estudi_Examen/get_estu_exa`,
         {
           method: "POST",
           headers: {
